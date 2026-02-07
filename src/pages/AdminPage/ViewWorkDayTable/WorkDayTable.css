@@ -1,0 +1,105 @@
+.page-container {
+  padding: 16px;
+  width:80vw;
+  
+}
+
+.month-selector {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.selector-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selector-group label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.year-picker,
+.month-picker-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  min-width: 120px;
+  cursor: pointer;
+  background-color: white;
+}
+
+.year-picker:focus,
+.month-picker-dropdown:focus {
+  outline: 2px solid #667eea;
+  border-color: #667eea;
+}
+
+.month-picker-dropdown option:disabled {
+  color: #ccc;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #333;
+}
+
+.workday-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 900px;
+}
+
+.workday-table th,
+.workday-table td {
+  border: 1px solid #333;
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.workday-table thead th {
+  background: #f2f2f2;
+  font-weight: 600;
+}
+
+.col-index {
+  width: 36px;
+}
+
+.col-name {
+  min-width: 180px;
+}
+
+.col-role {
+  min-width: 120px;
+}
+
+.col-total {
+  width: 70px;
+}
+
+.col-days {
+  font-weight: 600;
+}
+
+.col-leave {
+  min-width: 220px;
+}
+
+.day-cell {
+  width: 26px;
+  padding: 2px 0;
+}
+
+.cell-left {
+  text-align: left;
+}

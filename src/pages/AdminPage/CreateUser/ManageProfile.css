@@ -1,0 +1,124 @@
+.manage-profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem 0 2rem 3rem;
+
+ 
+}
+
+.form-row {
+  display: flex;
+  gap: 2.5rem;
+
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  height: 50px;
+  width: 200px;
+  border-radius: 6px;
+  border: 2px solid #d1d5db;
+  background-color: #f5f5f5;
+  padding-left: 1rem;
+    
+}
+
+
+
+.form-select {
+  height: 50px;
+  width: 200px;
+  border-radius: 6px;
+  border: 2px solid #d1d5db;
+  background-color: #f5f5f5;
+  padding: 0 1rem;
+}
+
+.button-container {
+  margin-top: 1rem;
+  margin-right: 2.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.save-button {
+  height: 40px;
+  width: 100px;
+  border-radius: 6px;
+  background-color: #1173be;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-button:hover {
+  filter: brightness(1.25);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 50%;
+  border-radius: 6px;
+  background-color: white;
+  padding: 2rem;
+}
+
+.modal-header {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel-button {
+  height: 40px;
+  width: 100px;
+  border-radius: 6px;
+  border: 2px solid #d1d5db;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  filter: brightness(0.75);
+}
+
+.confirm-button {
+  height: 40px;
+  width: 100px;
+  border-radius: 6px;
+  background-color: #1173be;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.confirm-button:hover {
+  filter: brightness(1.25);
+}

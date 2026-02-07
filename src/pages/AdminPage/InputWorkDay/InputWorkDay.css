@@ -1,0 +1,162 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem 0 2rem 5rem;
+}
+
+.page-container h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.page-container p {
+  color: #4b5563;
+  margin: 0;
+}
+.user-selector {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-selector label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.user-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  min-width: 200px;
+  cursor: pointer;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #333;
+  margin: 20px 0;
+}
+
+.input-table {
+  min-width: 900px;
+}
+
+.workday-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.workday-table th,
+.workday-table td {
+  border: 1px solid #333;
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.workday-table thead th {
+  background: #f2f2f2;
+  font-weight: 600;
+}
+
+.col-index {
+  width: 36px;
+}
+
+.col-total {
+  width: 70px;
+}
+
+.col-days {
+  font-weight: 600;
+}
+
+.col-leave {
+  min-width: 220px;
+}
+
+.day-cell {
+  width: 26px;
+  padding: 2px 0;
+}
+
+.day-tick {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.day-tick:hover {
+  background-color: #f0f0f0;
+  border-color: #667eea;
+}
+
+.day-tick:active {
+  transform: scale(0.95);
+}
+
+.total-input,
+.leave-input {
+  width: 100%;
+  padding: 4px;
+}
+
+.total-input input,
+.leave-input input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 12px;
+}
+
+.total-input input:focus,
+.leave-input input:focus {
+  outline: 2px solid #667eea;
+  border-color: #667eea;
+}
+
+.row-index {
+  width: 36px;
+  font-weight: 600;
+}
+
+.button-container {
+  margin-top: 1rem;
+  margin-right: 2.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.save-button {
+  height: 40px;
+  width: 100px;
+  border-radius: 6px;
+  background-color: #1173be;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-button:hover {
+  filter: brightness(1.25);
+}
