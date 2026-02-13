@@ -4,7 +4,8 @@ import { usePayroll } from "../../../presentation/hooks/usePayroll";
 import { useAuth } from "../../../presentation/hooks/useAuth";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { userAPI, payrollAPI } from "../../../services/api";
-import { STORAGE_TOKEN } from "../../../config/constants";
+import { USER_ROLES } from "../../../config/constants";
+import { getUserRole } from "../../../config/PermissionHelper";
 
 function WorkDayTable() {
   // Initialize with current month
@@ -34,19 +35,15 @@ function WorkDayTable() {
 
   // Helper function to check if user is employee (non-admin)
   const isEmployeeRole = () => {
-    const user = getCurrentUser();
-    if (!user) return false;
-    // Check token for role information
-    const token = localStorage.getItem(STORAGE_TOKEN);
-    if (!token) return false;
-    try {
-      const parts = token.split('.');
-      const decoded = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-      const role = decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-      return role && role.toLowerCase() === 'employee';
-    } catch {
-      return false;
-    }
+   
+    const role = getUserRole();
+    return role === USER_ROLES.USER;
+  };
+
+  // Helper function to check if user is HR or Admin
+  const isHROrAdmin = () => {
+    const role = getUserRole();
+    return role === USER_ROLES.HR || role === USER_ROLES.ADMIN;
   };
 
   // Create date from selected year and month
@@ -103,11 +100,33 @@ function WorkDayTable() {
     loadUserData();
   }, []);
 
-  // Fetch all employees (only on component mount)
+  // Fetch all employees (only on component mount and only for admin)
   useEffect(() => {
     const loadAllEmployees = async () => {
       try {
-        const employeeList = await userAPI.getAllUsers();
+        let employeeList = [];
+        
+        if (isEmployeeRole()) {
+          // Employee: only fetch their own data
+          if (currentUser) {
+            employeeList = [
+              {
+                id: currentUser.id,
+                fullName: currentUser.fullName || "Chưa cập nhật",
+                days: Array.from({ length: daysInMonth }, () => ""),
+                total: 26,
+                overtimeHours: 0,
+                unpaidLeave: 1,
+                holidayLeave: 1,
+                paidLeave: 0,
+              }
+            ];
+          }
+        } else {
+          // Admin/HR: fetch all employees
+          employeeList = await userAPI.getAllUsers();
+        }
+
         const formattedEmployees = employeeList.map((emp) => ({
           id: emp.id,
           fullName: emp.fullName || "Chưa cập nhật",
@@ -135,7 +154,6 @@ function WorkDayTable() {
     // Check if user is employee
     if (isEmployeeRole()) {
       // Employee: fetch only their own salary
-      const currentUser = getCurrentUser();
       if (!currentUser) return;
 
       try {
@@ -171,14 +189,10 @@ function WorkDayTable() {
       }
     } else {
       // Admin: fetch all employees' salaries
-      if (!employeeList || employeeList.length === 0) {
-        return;
-      }
-
       try {
         setLoadingSalaries(true);
         
-        const response = await payrollAPI.calculatePayroll(employeeList, month, year);
+        const response = await payrollAPI.calculatePayroll(month, year);
         
         const salariesMap = {};
        
@@ -206,11 +220,7 @@ function WorkDayTable() {
   };
 
   // Fetch salaries when employees list changes (initial load)
-  useEffect(() => {
-    if (employees && employees.length > 0) {
-      fetchSalariesForMonth(selectedMonth, selectedYear);
-    }
-  }, [employees]);
+  // Removed: Data only fetches when user clicks "Tra cứu" button
 
   const handleYearChange = (e) => {
     const newYear = parseInt(e.target.value);
@@ -232,26 +242,27 @@ function WorkDayTable() {
 
   const handleSearch = async () => {
     setHasSearched(true);
-    // Refresh employees list to get updated fullName
-    try {
-      debugger;
-      const employeeList = await userAPI.getAllUsers();
-      const formattedEmployees = employeeList.map((emp) => ({
-        id: emp.id,
-        fullName: emp.fullName || "Chưa cập nhật",
-        days: Array.from({ length: daysInMonth }, () => ""),
-        total: 26,
-        overtimeHours: 0,
-        unpaidLeave: 1,
-        holidayLeave: 1,
-        paidLeave: 0,
-      }));
-      setEmployees(formattedEmployees);
-      // Fetch salaries with updated employees
-      await fetchSalariesForMonth(selectedMonth, selectedYear, formattedEmployees);
-    } catch (error) {
-      // Error fetching employees
+    // Only admin/HR needs to refresh employees list
+    if (!isEmployeeRole()) {
+      try {
+        const employeeList = await userAPI.getAllUsers();
+        const formattedEmployees = employeeList.map((emp) => ({
+          id: emp.id,
+          fullName: emp.fullName || "Chưa cập nhật",
+          days: Array.from({ length: daysInMonth }, () => ""),
+          total: 26,
+          overtimeHours: 0,
+          unpaidLeave: 1,
+          holidayLeave: 1,  
+          paidLeave: 0,
+        }));
+        setEmployees(formattedEmployees);
+      } catch (error) {
+        // Error fetching employees
+      }
     }
+    // Fetch salaries with updated employees
+    await fetchSalariesForMonth(selectedMonth, selectedYear);
   };
 
   // Check if a month should be disabled
@@ -467,6 +478,9 @@ function WorkDayTable() {
                     <button
                       onClick={() => handleViewDetails(row)}
                       className="detail-btn"
+                      disabled={isEmployeeRole() && row.id !== currentUser?.id}
+                      style={isEmployeeRole() && row.id !== currentUser?.id ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                      title={isEmployeeRole() && row.id !== currentUser?.id ? "Chỉ có thể xem dữ liệu của chính mình" : "Xem chi tiết"}
                     >
                       Chi tiết
                     </button>
@@ -558,6 +572,7 @@ function WorkDayTable() {
             <h3 style={{ marginTop: 0, marginBottom: "20px" }}>
               Chi tiết chấm công - {employees.find(e => e.id === selectedRow.id)?.fullName || selectedRow.fullName} -  {monthLabel}
             </h3>
+          
             {loadingTimesheet ? (
               <div
                 style={{

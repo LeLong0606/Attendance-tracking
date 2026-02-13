@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../presentation/hooks/useAuth';
+import { useToast } from '../../../hooks/useToast';
+import { getTempToken } from '../../../config/TokenHelper';
 
 const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, placeholder }) => (
   <div style={{ position: "relative", width: "100%" }}>
@@ -56,57 +59,103 @@ function ChangePasswordModal({ isOpen, onClose }) {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { changePassword } = useAuth();
+  const { changePassword, changeInitialPassword } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleChangePassword = async () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("Vui lòng nhập đầy đủ mật khẩu.");
-      return;
+    // Check if using temp token (initial password change)
+    const tempToken = getTempToken();
+    const isInitialPasswordChange = !!tempToken;
+
+    // Validate inputs
+    if (isInitialPasswordChange) {
+      // For initial password change, only need new password
+      if (!newPassword || !confirmPassword) {
+        showToast("Vui lòng nhập đầy đủ mật khẩu mới.", "warning");
+        return;
+      }
+    } else {
+      // For regular password change, need current password
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        showToast("Vui lòng nhập đầy đủ mật khẩu.", "warning");
+        return;
+      }
     }
 
     if (newPassword !== confirmPassword) {
-      alert("Mật khẩu mới không khớp.");
-      return;
-    }
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+      showToast("Mật khẩu mới không khớp.", "error");
       return;
     }
 
     try {
-      await changePassword(currentPassword, newPassword, confirmPassword);
-      alert("Đổi mật khẩu thành công!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setShowCurrentPassword(false);
-      setShowNewPassword(false);
-      setShowConfirmPassword(false);
-      onClose();
+      if (isInitialPasswordChange) {
+        // Change initial password using temp token
+        const result = await changeInitialPassword(newPassword, confirmPassword);
+        showToast(result.message || "Đổi mật khẩu thành công!", "success");
+        
+        // Reset form
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setShowCurrentPassword(false);
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
+        
+        // Close modal and navigate to login
+      
+          onClose();
+          navigate('/', { replace: true });
+          window.location.reload();
+      
+      } else {
+        // Regular password change
+        await changePassword(currentPassword, newPassword, confirmPassword);
+        showToast("Đổi mật khẩu thành công!", "success");
+        
+        // Reset form
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setShowCurrentPassword(false);
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
+        
+        // Close modal and navigate to main
+        setTimeout(() => {
+          onClose();
+          navigate('/main', { replace: true });
+        }, 1500);
+      }
     } catch (error) {
-      alert(error.message || "Đổi mật khẩu thất bại. Vui lòng thử lại.");
+      showToast(error.message || "Đổi mật khẩu thất bại. Vui lòng thử lại.", "error");
     }
   };
 
   if (!isOpen) return null;
 
+  const tempToken = getTempToken();
+  const isInitialPasswordChange = !!tempToken;
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2 className="modal-header">Đổi mật khẩu</h2>
+        <h2 className="modal-header">
+          {isInitialPasswordChange ? "Đổi mật khẩu lần đầu" : "Đổi mật khẩu"}
+        </h2>
         <div style={{ display: "flex", gap: "1rem", width: "100%", flexDirection: "column" }}>
-          <div>
-            <label>Mật khẩu hiện tại</label>
-            <PasswordInputWithToggle
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              showPassword={showCurrentPassword}
-              onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
-              placeholder="Nhập mật khẩu hiện tại"
-            />
-          </div>
+          {!isInitialPasswordChange && (
+            <div>
+              <label>Mật khẩu hiện tại</label>
+              <PasswordInputWithToggle
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                showPassword={showCurrentPassword}
+                onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
+                placeholder="Nhập mật khẩu hiện tại"
+              />
+            </div>
+          )}
           <div>
             <label>Mật khẩu mới</label>
             <PasswordInputWithToggle

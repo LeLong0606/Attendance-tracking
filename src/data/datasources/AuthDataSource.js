@@ -138,4 +138,46 @@ export class AuthDataSource {
       throw err;
     }
   }
+
+  /**
+   * Thay đổi mật khẩu ban đầu (dùng temp token)
+   * @param {string} newPassword - Mật khẩu mới
+   * @param {string} confirmPassword - Xác nhận mật khẩu mới
+   * @returns {Promise<{accessToken}>}
+   */
+  async changeInitialPassword(newPassword, confirmPassword) {
+    try {
+      const { getTempToken } = await import('../../config/TokenHelper');
+      const tempToken = getTempToken();
+      
+      if (!tempToken) {
+        throw new Error('Token tạm thời không hợp lệ. Vui lòng đăng nhập lại.');
+      }
+
+      const payload = {
+        newPassword,
+        confirmNewPassword: confirmPassword,
+      };
+
+      // Create a special axios instance for temp token
+      const tempAuthAxios = axios.create({
+        baseURL: API_BASE_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tempToken}`,
+        },
+        withCredentials: true,
+      });
+
+      const response = await tempAuthAxios.post(API_ENDPOINTS.CHANGE_INITIAL_PASSWORD, payload);
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'Thay đổi mật khẩu thất bại';
+      const err = new Error(errorMessage);
+      throw err;
+    }
+  }
 }

@@ -1,13 +1,11 @@
 .page-container {
   padding: 1rem;
-  width: 61vw;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
+  flex: 1;
 }
 
 .month-selector {
@@ -15,7 +13,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 6px;
@@ -65,18 +63,15 @@
 
 .table-wrapper {
   width: 100%;
-  overflow-x: auto;
-  overflow-y: auto;
   background: #fff;
   border: 1px solid #d4dce6;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   flex: 1;
   margin-top: 1rem;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .workday-table {
@@ -114,13 +109,14 @@
 /* Div-based table layout */
 .div-table {
   display: grid;
-  grid-template-columns: 100px 35px 140px 70px 80px 90px 90px 90px 90px 90px;
+  grid-template-columns: 100px 40px 150px 100px 100px 100px 100px 100px 100px 100px;
   width: 100%;
   font-size: 8px;
   background: #fff;
   flex: 1;
   min-height: 100%;
   align-content: start;
+  gap: 0;
 }
 
 .div-header {
@@ -133,7 +129,7 @@
   font-weight: 700;
   color: #1f2937;
   border: 1px solid #d4dce6;
-  padding: 10px 8px;
+  padding: 12px 10px;
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
@@ -159,7 +155,7 @@
 
 .data-cell {
   border: 1px solid #e0e5eb;
-  padding: 10px 8px;
+  padding: 10px 10px;
   text-align: left;
   vertical-align: middle;
   white-space: nowrap;
@@ -179,43 +175,43 @@
 }
 
 .col-index {
-  width: 35px;
+  width: 40px;
   text-align: center;
   min-width: 35px;
 }
 
 .col-name {
-  min-width: 140px;
+  min-width: 100px;
   text-align: left;
   padding-left: 12px;
 }
 
 .col-total {
-  width: 70px;
+  width: 100px;
   text-align: left;
 }
 
 .col-overtime {
-  width: 81px;
+  width: 100px;
   text-align: left;
 }
 
 .col-salary {
-  width: 90px;
+  width: 100px;
   text-align: left;
 
   padding-right: 8px;
 }
 
 .col-allowance {
-  width: 90px;
+  width: 100px;
   text-align: left;
 
   padding-right: 8px;
 }
 
 .col-total-salary {
-  width: 90px;
+  width: 100px;
   text-align: left;
 
   padding-right: 8px;
@@ -224,14 +220,14 @@
 }
 
 .col-advance {
-  width: 90px;
+  width: 100px;
   text-align: left;
 
   padding-right: 8px;
 }
 
 .col-remaining {
-  width: 90px;
+  width: 100px;
   text-align: left;
   padding-right: 8px;
   font-weight: 600;
@@ -292,3 +288,5 @@
 .detail-btn:active {
   background-color: #1d4ed8;
 }
+
+

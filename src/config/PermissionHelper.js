@@ -48,9 +48,9 @@ export const getUserRole = () => {
   }
 
   // Kiểm tra là HR
-  if (hasHRAccess()) {
-    return USER_ROLES.HR;
-  }
+  // if (hasHRAccess()) {
+  //   return USER_ROLES.HR;
+  // }
 
   // Mặc định là User (Nhân viên)
   return USER_ROLES.USER;

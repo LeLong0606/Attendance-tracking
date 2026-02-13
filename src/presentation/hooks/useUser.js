@@ -49,6 +49,27 @@ export const useUser = () => {
   }, []);
 
   /**
+   * Lấy thông tin hồ sơ cá nhân hiện tại
+   */
+  const loadProfileMe = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('📥 Lấy thông tin hồ sơ cá nhân...');
+      const data = await userRepository.getProfileMe();
+      setProfile(data);
+      console.log('✅ Lấy hồ sơ cá nhân thành công!');
+      return data;
+    } catch (err) {
+      console.error('❌ Lỗi lấy hồ sơ cá nhân:', err);
+      setError(err.message || 'Lấy hồ sơ cá nhân thất bại');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
    * Cập nhật thông tin hồ sơ người dùng
    */
   const updateProfile = useCallback(async (profileData) => {
@@ -74,11 +95,54 @@ export const useUser = () => {
     }
   }, []);
 
+  /**
+   * Cập nhật thông tin cá nhân người dùng (/api/userProfile/me)
+   */
+  const updateProfileMe = useCallback(async (profileData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('📝 Cập nhật thông tin cá nhân...');
+      await userRepository.updateProfileMe(profileData);
+      console.log('✅ Cập nhật thành công!');
+      return { success: true };
+    } catch (err) {
+      console.error('❌ Lỗi cập nhật:', err);
+      setError(err.message || 'Cập nhật thất bại');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
+   * Cập nhật thông tin người dùng (/api/user/{id})
+   */
+  const updateUser = useCallback(async (userId, userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('📝 Cập nhật thông tin người dùng...');
+      await userRepository.updateUser(userId, userData);
+      console.log('✅ Cập nhật thành công!');
+      return { success: true };
+    } catch (err) {
+      console.error('❌ Lỗi cập nhật:', err);
+      setError(err.message || 'Cập nhật thất bại');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     profile,
     loading,
     error,
     loadProfile,
+    loadProfileMe,
     updateProfile,
+    updateProfileMe,
+    updateUser,
   };
 };

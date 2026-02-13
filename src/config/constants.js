@@ -14,10 +14,12 @@ export const API_ENDPOINTS = {
   LOGIN: '/auth/login',
   LOGOUT: '/auth/logout',
   CHANGE_PASSWORD: '/auth/change-password',
+  CHANGE_INITIAL_PASSWORD: '/auth/change-initial-password',
   
   // User
   GET_PROFILE: '/userProfile',
-  UPDATE_PROFILE: '/user/profile',
+
+  UPDATE_PROFILE_ME: '/userProfile/me',
   
   // Payroll
   GET_SALARY_COMPONENTS: '/payroll/salary-structure/components',

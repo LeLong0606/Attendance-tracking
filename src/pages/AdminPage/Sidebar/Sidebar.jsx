@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getUserRole } from '../../../config/PermissionHelper';
 import { USER_ROLES } from '../../../config/constants';
-import { UserIcon, UsersIcon, DocumentIcon, ClipboardListIcon } from '../../../utils/Icons';
+import { StatisticsIcon, UsersIcon, DocumentIcon, ClipboardListIcon } from '../../../utils/Icons';
 import './Sidebar.css';
 
 function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
@@ -11,7 +11,7 @@ function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
   const isAdmin = userRole === USER_ROLES.ADMIN;
 
   const menuItems = [
-    { id: 'dashboard', label: 'Thông tin cá nhân', Icon: UserIcon, role: 'all' },
+    { id: 'dashboard', label: 'Biểu đồ thống kê', Icon: StatisticsIcon, role: 'admin' },
     { id: 'manage', label: 'Quản lý tài khoản', Icon: UsersIcon, role: 'admin' },
     { id: 'input', label: 'Nhập ngày công', Icon: DocumentIcon, role: 'admin' },
     { id: 'view', label: 'Xem ngày công', Icon: ClipboardListIcon, role: 'all' },
@@ -38,7 +38,7 @@ function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
         <div className="sidebar-header" onClick={onClose}>
           <div className="sidebar-logo">
             <span className="logo-icon"><i className="fa-solid fa-bars"></i></span>
-            <span className="logo-text">Bảng điều khiển</span>
+            <span className="logo-text">Habitas</span>
           </div>
           <button 
             className="sidebar-close"

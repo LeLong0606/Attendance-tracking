@@ -10,6 +10,7 @@ export class User {
     this.permissions = permissions || []; // Danh sách quyền
     this.exp = exp;                        // Thời gian hết hạn token
     this.iat = iat;                        // Thời gian tạo token
+    this.fullName = null;                  // Tên đầy đủ (lấy từ API sau)
   }
 
   /**

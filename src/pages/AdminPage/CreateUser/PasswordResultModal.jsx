@@ -1,4 +1,8 @@
-function PasswordResultModal({ isOpen, password, onClose }) {
+import { useToast } from "../../../hooks/useToast";
+
+function PasswordResultModal({ isOpen, password, username, onClose }) {
+  const { showToast } = useToast();
+
   const handleCopy = (text) => {
     try {
       const textArea = document.createElement("textarea");
@@ -9,10 +13,9 @@ function PasswordResultModal({ isOpen, password, onClose }) {
       textArea.select();
       document.execCommand("copy");
       document.body.removeChild(textArea);
-      alert("Đã copy mật khẩu!");
+      showToast("Đã copy mật khẩu!", "success");
     } catch (error) {
-
-      alert("Copy thất bại!");
+      showToast("Copy thất bại!", "error");
     }
   };
 
@@ -23,7 +26,7 @@ function PasswordResultModal({ isOpen, password, onClose }) {
       <div className="modal-content">
         <h2 className="modal-header">Tạo tài khoản thành công!</h2>
         <div style={{ marginBottom: "1.5rem" }}>
-          <p style={{ marginBottom: "0.5rem" }}>Mật khẩu của tài khoản mới là:</p>
+          <p style={{ marginBottom: "0.5rem" }}>Mật khẩu của {username} là:</p>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <input
               type="text"

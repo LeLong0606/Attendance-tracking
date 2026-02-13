@@ -8,7 +8,7 @@ import ChangePasswordModal from './ChangePasswordModal';
 import AvatarUploadModal from './AvatarUploadModal';
 import { CameraIcon, LockIcon, LogoutIcon, ChevronDownIcon, MenuIcon } from '../../../utils/Icons';
 
-function Topbar({ user, avatar, onAvatarChange, currentPage, onMenuClick, sidebarOpen }) {
+function Topbar({ user, avatar, onAvatarChange, currentPage, onMenuClick, onPageChange, sidebarOpen }) {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -16,10 +16,12 @@ function Topbar({ user, avatar, onAvatarChange, currentPage, onMenuClick, sideba
   const [showAvatarModal, setShowAvatarModal] = useState(false);
 
   const menuItems = [
-    { id: 'dashboard', label: 'Thông tin cá nhân' },
+    { id: 'dashboard', label: 'Biểu đồ thống kê' },
     { id: 'manage', label: 'Quản lý tài khoản' },
     { id: 'input', label: 'Nhập ngày công' },
-    { id: 'view', label: 'Xem ngày công' },
+    { id: 'view', label: 'Xem ngày công'  },
+     { id: 'profile' , label: 'Thông tin cá nhân' },
+   
   ];
 
   const currentPageLabel = menuItems.find(item => item.id === currentPage)?.label || 'Quản lý';
@@ -70,10 +72,6 @@ function Topbar({ user, avatar, onAvatarChange, currentPage, onMenuClick, sideba
         </div>
 
         <div className="topbar-right">
-          <div className="user-badge">
-            <span className="role-badge">{user ? getUserRole() : ''}</span>
-          </div>
-
           <div className="user-menu">
             <button 
               className="user-button"
@@ -84,16 +82,26 @@ function Topbar({ user, avatar, onAvatarChange, currentPage, onMenuClick, sideba
                   <img src={avatar} alt="Avatar" className="avatar-img" />
                 ) : (
                   <span className="avatar-initial">
-                    {user?.username?.charAt(0).toUpperCase() || 'U'}
+                    {user?.fullName?.charAt(0).toUpperCase() || 'U'}
                   </span>
                 )}
               </div>
-              <span className="username">{user?.username || 'User'}</span>
+              <span className="username">{user?.fullName || 'User'}</span>
               <span className="dropdown-icon"><ChevronDownIcon /></span>
             </button>
 
             {showUserMenu && (
               <div className="user-dropdown">
+                <button 
+                  className="dropdown-item"
+                  onClick={() => {
+                    onPageChange('profile');
+                    setShowUserMenu(false);
+                  }}
+                >
+                  <i className="fa-solid fa-user"></i>
+                  <span>Thông tin cá nhân</span>
+                </button>
                 <button 
                   className="dropdown-item"
                   onClick={() => {

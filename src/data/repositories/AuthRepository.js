@@ -39,4 +39,14 @@ export class AuthRepository extends IAuthRepository {
   async changePassword(oldPassword, newPassword, confirmPassword) {
     return this.dataSource.changePassword(oldPassword, newPassword, confirmPassword);
   }
+
+  /**
+   * Thay đổi mật khẩu ban đầu (dùng temp token)
+   * @param {string} newPassword - Mật khẩu mới
+   * @param {string} confirmPassword - Xác nhận mật khẩu mới
+   * @returns {Promise<{accessToken}>}
+   */
+  async changeInitialPassword(newPassword, confirmPassword) {
+    return this.dataSource.changeInitialPassword(newPassword, confirmPassword);
+  }
 }

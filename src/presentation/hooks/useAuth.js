@@ -7,7 +7,7 @@ import { AuthRepository } from '../../data/repositories/AuthRepository';
 import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { LogoutUseCase } from '../../domain/usecases/LogoutUseCase';
 import { ChangePasswordUseCase } from '../../domain/usecases/ChangePasswordUseCase';
-import { decodeToken, saveTokenToStorage, saveUserToStorage, getUserFromToken, clearAuthStorage } from '../../config/TokenHelper';
+import { decodeToken, saveTokenToStorage, saveUserToStorage, getUserFromToken, clearAuthStorage, saveTempTokenToStorage, clearTempToken } from '../../config/TokenHelper';
 import { STORAGE_TOKEN } from '../../config/constants';
 
 export const useAuth = () => {
@@ -32,6 +32,18 @@ export const useAuth = () => {
       // Gọi use case đăng nhập
       const response = await loginUseCase.execute(username, password);
 
+      // Kiểm tra nếu require password change
+      if (response.requirePasswordChange && response.tempToken) {
+        console.log('🔑 Cần đổi mật khẩu lần đầu');
+        saveTempTokenToStorage(response.tempToken);
+        
+        return { 
+          success: false, 
+          requirePasswordChange: true, 
+          user: response.user 
+        };
+      }
+
       if (!response || !response.accessToken) {
         throw new Error('Không nhận được token từ server');
       }
@@ -40,6 +52,7 @@ export const useAuth = () => {
 
       // Lưu token vào localStorage
       saveTokenToStorage(response.accessToken);
+      clearTempToken(); // Xóa temp token nếu có
 
       // Decode token và lấy user info
       const decoded = decodeToken(response.accessToken);
@@ -100,7 +113,19 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      await changePasswordUseCase.execute(oldPassword, newPassword, confirmPassword);
+      const response = await changePasswordUseCase.execute(oldPassword, newPassword, confirmPassword);
+      
+      // Lưu access token mới nếu API trả về
+      if (response && response.accessToken) {
+        saveTokenToStorage(response.accessToken);
+        
+        // Lấy user info từ token mới
+        const user = getUserFromToken();
+        if (user) {
+          saveUserToStorage(user);
+        }
+      }
+      
       return { success: true };
     } catch (err) {
       setError(err.message || 'Thay đổi mật khẩu thất bại');
@@ -126,12 +151,45 @@ export const useAuth = () => {
     return !!token && !!user;
   }, []);
 
+  /**
+   * Thay đổi mật khẩu ban đầu (dùng temp token)
+   */
+  const changeInitialPassword = useCallback(async (newPassword, confirmPassword) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await authRepository.changeInitialPassword(newPassword, confirmPassword);
+      
+      // Xóa temp token
+      clearTempToken();
+      
+      // Lưu access token mới
+      if (response.accessToken) {
+        saveTokenToStorage(response.accessToken);
+        
+        // Lấy user info từ token mới
+        const user = getUserFromToken();
+        if (user) {
+          saveUserToStorage(user);
+        }
+      }
+      
+      return { success: true, message: response.message };
+    } catch (err) {
+      setError(err.message || 'Thay đổi mật khẩu thất bại');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     loading,
     error,
     login,
     logout,
     changePassword,
+    changeInitialPassword,
     getCurrentUser,
     isAuthenticated,
   };

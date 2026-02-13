@@ -11,7 +11,7 @@ export class LoginUseCase {
    * Thực thi đăng nhập
    * @param {string} username - Tên đăng nhập
    * @param {string} password - Mật khẩu
-   * @returns {Promise<{accessToken, message}>}
+   * @returns {Promise<{accessToken|requirePasswordChange}>}
    */
   async execute(username, password) {
     // Kiểm tra input
@@ -23,7 +23,17 @@ export class LoginUseCase {
       // Gọi repository để đăng nhập
       const result = await this.authRepository.login(username, password);
 
-      if (!result || !result.accessToken) {
+      if (!result) {
+        throw new Error('Đăng nhập thất bại: Không nhận được response từ server');
+      }
+
+      // Kiểm tra xem có yêu cầu đổi mật khẩu lần đầu không
+      if (result.requirePasswordChange && result.tempToken) {
+        return result;
+      }
+
+      // Kiểm tra xem có accessToken không (đăng nhập bình thường)
+      if (!result.accessToken) {
         throw new Error('Đăng nhập thất bại: Không nhận được token');
       }
 

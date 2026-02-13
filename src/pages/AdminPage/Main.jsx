@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../presentation/hooks/useAuth';
+import { useUser } from '../../presentation/hooks/useUser';
 import { getUserFromToken } from '../../config/TokenHelper';
 import { STORAGE_TOKEN, STORAGE_USER, STORAGE_REFRESH_TOKEN } from '../../config/constants';
 import PersonalInfo from './PersonalInfor/PersonalInfo';
+import StatisticsPage from './StatisticsPage/StatisticsPage';
 import ManageProfile from './CreateUser/ManageProfile';
 import InputWorkDay from './InputWorkDay/InputWorkDay';
 import WorkDayTable from './ViewWorkDayTable/WorkDayTable';
@@ -17,6 +19,7 @@ function Main() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { loadProfile } = useUser();
 
   useEffect(() => {
     const userInfo = getUserFromToken();
@@ -25,8 +28,26 @@ function Main() {
       navigate('/');
     } else {
       setUser(userInfo);
+      
+      // Fetch user profile để lấy fullName từ API
+      loadProfile()
+        .then((profileData) => {
+          // Merge profile data vào user state
+          setUser(prev => ({
+            ...prev,
+            fullName: profileData.fullName || profileData.full_name || prev.username
+          }));
+        })
+        .catch((err) => {
+          console.error('❌ Lỗi lấy profile:', err);
+          // Fallback: sử dụng username nếu không lấy được fullName
+          setUser(prev => ({
+            ...prev,
+            fullName: prev.username
+          }));
+        });
     }
-  }, [navigate]);
+  }, [navigate, loadProfile]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -42,6 +63,8 @@ function Main() {
   const renderPageContent = () => {
     switch (currentPage) {
       case 'dashboard':
+        return <StatisticsPage />;
+      case 'profile':
         return <PersonalInfo />;
       case 'manage':
         return <ManageProfile />;
@@ -50,7 +73,7 @@ function Main() {
       case 'view':
         return <WorkDayTable />;
       default:
-        return <PersonalInfo />;
+        return <StatisticsPage />;
     }
   };
 
@@ -72,6 +95,10 @@ function Main() {
           onAvatarChange={handleAvatarChange} 
           currentPage={currentPage}
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onPageChange={(page) => {
+            setCurrentPage(page);
+            setSidebarOpen(false);
+          }}
           sidebarOpen={sidebarOpen}
         />
         <main className="main-content">

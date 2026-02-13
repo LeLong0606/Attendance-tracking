@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../presentation/hooks/useAuth';
-import ChangePasswordModal from '../AdminPage/Topbar/ChangePasswordModal';  
+import { useToast } from '../../hooks/useToast';
+import ChangePasswordModal from '../AdminPage/Topbar/ChangePasswordModal';
 import './Login.css';
 
 /**
@@ -10,8 +11,6 @@ import './Login.css';
  */
 function Login() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const navigate = useNavigate();
@@ -19,6 +18,7 @@ function Login() {
   
   // Lấy auth functions từ custom hook
   const { login, loading, error } = useAuth();
+  const { showToast } = useToast();
 
   /**
    * Xử lý submit form đăng nhập
@@ -26,26 +26,33 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Lấy giá trị trực tiếp từ form elements
+    const formData = new FormData(formRef.current);
+    const usernameValue = formData.get('username');
+    const passwordValue = formData.get('password');
+
     // Kiểm tra nhập liệu
-    if (!username || !password) {
-      alert('Vui lòng nhập tên đăng nhập và mật khẩu');
+    if (!usernameValue || !passwordValue) {
+      showToast('Vui lòng nhập tên đăng nhập và mật khẩu', 'error');
       return;
     }
 
     try {
       // Gọi login use case từ hook
-      const result = await login(username, password);
+      const result = await login(usernameValue, passwordValue);
       
       // Kiểm tra xem có cần đổi mật khẩu không
-      if (result.response?.isForceChangePassword) {
+      if (result.requirePasswordChange) {
+        showToast('Vui lòng đổi mật khẩu để tiếp tục.', 'warning');
         setShowPasswordModal(true);
       } else if (result.success) {
+        showToast('Đăng nhập thành công!', 'success');
         setTimeout(() => {
           navigate('/main', { replace: true });
-        }, 100);
+        }, 1500);
       }
     } catch (error) {
-      alert(error.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.');
+      showToast(error.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.', 'error');
     }
   };
 
@@ -57,6 +64,7 @@ function Login() {
           <input
             type="text"
             id="username"
+            name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             autoComplete="username"
@@ -70,8 +78,7 @@ function Login() {
           <input
             type={showPassword ? "text" : "password"}
             id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
             autoComplete="current-password"
             required
             disabled={loading}

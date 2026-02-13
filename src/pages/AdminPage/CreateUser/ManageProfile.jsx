@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { getUserFromToken } from "../../../config/TokenHelper";
+import { useToast } from "../../../hooks/useToast";
 import { userAPI } from "../../../services/api";
 import "./ManageProfile.css";
 import PasswordResultModal from "./PasswordResultModal";
@@ -12,10 +13,13 @@ function ManageProfile() {
   const [openModal, setOpenModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
+  const username = useRef(null);
+  
+  const { showToast } = useToast();
 
   const handleCreateUser = async () => {
     if (!fullName || !userName) {
-      alert("Vui lòng nhập đầy đủ thông tin.");
+      showToast("Vui lòng nhập đầy đủ thông tin.", "warning");
       return;
     }
      try {
@@ -47,7 +51,7 @@ function ManageProfile() {
         error.detail ||
         error.message ||
         "Tạo tài khoản thất bại. Vui lòng thử lại.";
-      alert(errorMessage);
+      showToast(errorMessage, "error");
     }
   };
 
@@ -123,6 +127,7 @@ function ManageProfile() {
         <div className="form-group">
           <label htmlFor="userName">Tên đăng nhập</label>
           <input
+            ref={username}
             id="userName"
             value={userName}
             onChange={userNameChange}
@@ -139,6 +144,7 @@ function ManageProfile() {
       <PasswordResultModal 
         isOpen={showPasswordModal} 
         password={generatedPassword} 
+        username={username.current?.value}
         onClose={closePasswordModalHandler}
       />
     </div>

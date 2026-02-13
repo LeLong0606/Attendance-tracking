@@ -12,7 +12,7 @@ export class ChangePasswordUseCase {
    * @param {string} oldPassword - Mật khẩu cũ
    * @param {string} newPassword - Mật khẩu mới
    * @param {string} confirmPassword - Xác nhận mật khẩu
-   * @returns {Promise<void>}
+   * @returns {Promise<{accessToken?}>}
    */
   async execute(oldPassword, newPassword, confirmPassword) {
     try {
@@ -28,7 +28,8 @@ export class ChangePasswordUseCase {
         throw new Error('Mật khẩu mới phải có ít nhất 8 ký tự');
       }
 
-      await this.authRepository.changePassword(oldPassword, newPassword, confirmPassword);
+      const response = await this.authRepository.changePassword(oldPassword, newPassword, confirmPassword);
+      return response;
     } catch (error) {
       throw error;
     }

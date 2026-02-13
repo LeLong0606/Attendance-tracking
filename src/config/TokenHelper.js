@@ -113,3 +113,50 @@ export const clearAuthStorage = () => {
     console.error('❌ Lỗi xóa auth storage:', error);
   }
 };
+
+/**
+ * Lưu temp token vào localStorage (dùng khi cần đổi mật khẩu ban đầu)
+ * @param {string} tempToken - Temporary token
+ */
+export const saveTempTokenToStorage = (tempToken) => {
+  try {
+    localStorage.setItem('tempToken', tempToken);
+    console.log('✅ Lưu temp token vào storage thành công');
+  } catch (error) {
+    console.error('❌ Lỗi lưu temp token:', error);
+  }
+};
+
+/**
+ * Lấy temp token từ localStorage
+ * @returns {string|null} Temp token hoặc null
+ */
+export const getTempToken = () => {
+  try {
+    return localStorage.getItem('tempToken');
+  } catch (error) {
+    console.error('❌ Lỗi lấy temp token:', error);
+    return null;
+  }
+};
+
+/**
+ * Xóa temp token khỏi localStorage
+ */
+export const clearTempToken = () => {
+  try {
+    localStorage.removeItem('tempToken');
+    console.log('✅ Xóa temp token thành công');
+  } catch (error) {
+    console.error('❌ Lỗi xóa temp token:', error);
+  }
+};
+
+/**
+ * Kiểm tra xem đang sử dụng temp token không
+ * @returns {boolean}
+ */
+export const isUsingTempToken = () => {
+  return !!getTempToken();
+};
+

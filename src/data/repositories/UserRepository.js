@@ -21,12 +21,39 @@ export class UserRepository extends IUserRepository {
   }
 
   /**
+   * Lấy thông tin hồ sơ cá nhân hiện tại
+   * @returns {Promise<Object>}
+   */
+  async getProfileMe() {
+    return this.dataSource.getProfileMe();
+  }
+
+  /**
    * Cập nhật hồ sơ người dùng
    * @param {Object} profileData - Dữ liệu hồ sơ cần cập nhật
    * @returns {Promise<void>}
    */
   async updateProfile(profileData) {
     return this.dataSource.updateProfile(profileData);
+  }
+
+  /**
+   * Cập nhật hồ sơ người dùng hiện tại
+   * @param {Object} profileData - Dữ liệu hồ sơ cần cập nhật
+   * @returns {Promise<Object>}
+   */
+  async updateProfileMe(profileData) {
+    return this.dataSource.updateProfileMe(profileData);
+  }
+
+  /**
+   * Cập nhật thông tin người dùng
+   * @param {string} userId - ID người dùng
+   * @param {Object} userData - Dữ liệu người dùng cần cập nhật
+   * @returns {Promise<Object>}
+   */
+  async updateUser(userId, userData) {
+    return this.dataSource.updateUser(userId, userData);
   }
 
   /**
