@@ -4,7 +4,6 @@
  */
 import axios from 'axios';
 import { API_BASE_URL, STORAGE_TOKEN, API_ENDPOINTS } from '../../config/constants';
-
 /**
  * 🔍 Debug: In tất cả cookies hiện có
  */
@@ -82,6 +81,9 @@ export class AuthDataSource {
   async logout() {
     try {
       const response = await authAxios.post(API_ENDPOINTS.LOGOUT);
+      // ✅ Chỉ xóa token khi logout thành công
+      localStorage.removeItem(STORAGE_TOKEN);
+      localStorage.setItem("logout-event", Date.now().toString());
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || 

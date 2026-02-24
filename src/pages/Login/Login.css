@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap");
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 body {
@@ -24,14 +24,15 @@ body {
   background: white;
   border-radius: 10px;
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .center h2 {
   text-align: center;
   padding: 20px 0;
   border-bottom: 1px solid silver;
-   caret-color: transparent;
-   cursor: pointer;
+  caret-color: transparent;
+  cursor: pointer;
 }
 
 .center form {
@@ -43,7 +44,6 @@ form .txt_field {
   position: relative;
   border-bottom: 2px solid #adadad;
   margin: 30px 0;
-  
 }
 
 .txt_field input {
@@ -54,40 +54,41 @@ form .txt_field {
   border: none;
   background: none;
   outline: none;
-  
-   
-  
+  caret-color: transparent;
 }
 
 .txt_field label {
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 5px;
   color: #adadad;
-  transform: translateY(-50%);
+
   font-size: 16px;
   pointer-events: none;
-  transition: .5s;
-   
+  transition: 0.5s; 
+  opacity: 1;
+}
+
+.txt_field input:focus ~ label,
+.txt_field input:valid ~ label
+ {
+  top: -15px;
+  color: #2691d9;
+  opacity: 1;
+}
+.txt_field input:disabled:valid ~ label {
+  color: transparent ;
 }
 
 .txt_field span::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 40px;
   left: 0;
   width: 0%;
   height: 2px;
   background: #2691d9;
-  transition: .5s;
-}
-
-.txt_field input:focus ~ label,
-.txt_field input:valid ~ label {
-  
-  top: -5px;
-  color: #2691d9;
-   
+  transition: 0.5s;
 }
 
 .txt_field input:focus ~ span::before,
@@ -99,7 +100,7 @@ form .txt_field {
   margin: -5px 0 20px 5px;
   color: #a6a6a6;
   cursor: pointer;
-   caret-color: transparent;
+  caret-color: transparent;
 }
 
 .pass:hover {
@@ -116,12 +117,13 @@ input[type="submit"] {
   color: #e9f4fb;
   font-weight: 700;
   cursor: pointer;
+  caret-color: transparent;
   outline: none;
 }
 
 input[type="submit"]:hover {
   border-color: #2691d9;
-  transition: .5s;
+  transition: 0.5s;
 }
 
 .txt_field.password-field {
@@ -144,4 +146,19 @@ input[type="submit"]:hover {
 
 .toggle-password:hover {
   color: #1e5a96;
+}
+
+.txt_field label.hidden-animation {
+  animation: hideLabel 0.3s ease-in forwards;
+}
+
+@keyframes hideLabel {
+  from {
+    opacity: 1;
+    color: #2691d9;
+  }
+  to {
+    opacity: 0;
+    color: transparent;
+  }
 }

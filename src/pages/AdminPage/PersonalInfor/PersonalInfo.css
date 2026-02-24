@@ -6,7 +6,7 @@
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  width: 50vw;
+  width: 90vw;
   max-width: 100%;
 }
 
@@ -139,11 +139,12 @@
   background: #fff;
   transition: all 0.2s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: pointer !important;
 }
 
 .input-wrapper .form-input {
   padding-right: 2.75rem;
-  width: 100%;
+  width: 300px;
 }
 
 select.form-input {
@@ -177,8 +178,18 @@ select.form-input option {
 .form-input:read-only {
   background: #f5f5f5;
   color: #666;
-  cursor: default;
+  
   letter-spacing: 0.1em;
+  caret-color: transparent !important;
+}
+
+.form-input--readonly {
+  background: #f0f0f0;
+  color: #999;
+  cursor: not-allowed !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .input-icon-button {
@@ -208,6 +219,130 @@ select.form-input option {
 .input-icon-button svg {
   width: 18px;
   height: 18px;
+}
+
+/* Avatar Section */
+.avatar-section {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.avatar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-self: center;
+  flex: 1;
+}
+
+.avatar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.avatar-name-display {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+}
+
+.avatar-name-input {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: #2c3e50;
+  padding: 0.5rem 0.75rem !important;
+  border: 2px solid #667eea !important;
+}
+
+.avatar-name-input::placeholder {
+  color: #999;
+}
+
+.email-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.email-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.email-value {
+  font-size: 1rem;
+  color: #2c3e50;
+  word-break: break-all;
+}
+
+.avatar-display {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: #667eea;
+  font-size: 2rem;
+  border: 3px solid #667eea;
+}
+
+.avatar-change-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+  padding: 0;
+}
+
+.avatar-change-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.avatar-change-button i {
+  font-size: 0.9rem;
 }
 
 /* Responsive Design */

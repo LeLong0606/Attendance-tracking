@@ -6,7 +6,7 @@ import { userAPI } from "../../../services/api";
 import "./ManageProfile.css";
 import PasswordResultModal from "./PasswordResultModal";
 
-function ManageProfile() {
+function CreateUser() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
@@ -151,6 +151,4 @@ function ManageProfile() {
   );
 }
 
-export default ManageProfile;
-
-
+export default CreateUser;

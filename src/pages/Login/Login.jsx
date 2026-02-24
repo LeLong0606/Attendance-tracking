@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../presentation/hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
-import ChangePasswordModal from '../AdminPage/Topbar/ChangePasswordModal';
 import './Login.css';
 
 /**
@@ -12,7 +11,7 @@ import './Login.css';
 function Login() {
   const [username, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const formRef = useRef(null);
   
@@ -38,20 +37,22 @@ function Login() {
     }
 
     try {
+      setIsSubmitting(true);
       // Gọi login use case từ hook
       const result = await login(usernameValue, passwordValue);
       
       // Kiểm tra xem có cần đổi mật khẩu không
       if (result.requirePasswordChange) {
         showToast('Vui lòng đổi mật khẩu để tiếp tục.', 'warning');
-        setShowPasswordModal(true);
+        navigate('/change-password', { replace: true });
       } else if (result.success) {
         showToast('Đăng nhập thành công!', 'success');
         setTimeout(() => {
           navigate('/main', { replace: true });
-        }, 1500);
+        }, 1000);
       }
     } catch (error) {
+      setIsSubmitting(false);
       showToast(error.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.', 'error');
     }
   };
@@ -72,7 +73,7 @@ function Login() {
             disabled={loading}
           />
           <span></span>
-          <label htmlFor="username">Tên đăng nhập</label>
+          <label htmlFor="username" className={isSubmitting ? 'hidden-animation' : ''}>Tên đăng nhập</label>
         </div>
         <div className="txt_field password-field">
           <input
@@ -92,7 +93,7 @@ function Login() {
             <i className="fa-solid fa-eye"></i>
           </button>
           <span></span>
-          <label htmlFor="password">Mật khẩu</label>
+          <label htmlFor="password" className={isSubmitting ? 'hidden-animation' : ''}>Mật khẩu</label>
         </div>
         <div className="pass">Quên mật khẩu?</div>
         {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
@@ -103,10 +104,6 @@ function Login() {
           disabled={loading}
         />
       </form>
-      <ChangePasswordModal 
-        isOpen={showPasswordModal} 
-        onClose={() => setShowPasswordModal(false)} 
-      />
     </div>
   );
 }

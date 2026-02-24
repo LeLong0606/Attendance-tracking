@@ -64,3 +64,11 @@ export const HTTP_STATUS = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 };
+
+//Routes
+export const ROUTES = {
+  LOGIN:  '/' ,
+  MAIN: '/main',  
+  CHANGE_INIT_PASSWORD: '/change-init-password',
+  ERROR : '/error',
+};

@@ -1,11 +1,16 @@
 import { useState, useRef } from 'react';
+import { useToast } from '../../../hooks/useToast';
+import { userAPI } from '../../../services/api';
+import { getUserFromToken } from '../../../config/TokenHelper';
 import './AvatarUploadModal.css';
 
 function AvatarUploadModal({ isOpen, onClose, onUpload, currentAvatar }) {
   const [isDragging, setIsDragging] = useState(false);
   const [preview, setPreview] = useState(currentAvatar);
   const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const { showToast } = useToast();
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -30,17 +35,18 @@ function AvatarUploadModal({ isOpen, onClose, onUpload, currentAvatar }) {
       
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        alert('Vui lòng chọn tệp hình ảnh');
+        showToast('Vui lòng chọn tệp hình ảnh', 'error');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Kích thước tệp không được vượt quá 5MB');
+        showToast('Kích thước tệp không được vượt quá 5MB', 'error');
         return;
       }
 
-      // Create preview
+      // Save file and create preview
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreview(e.target.result);
@@ -67,17 +73,34 @@ function AvatarUploadModal({ isOpen, onClose, onUpload, currentAvatar }) {
   };
 
   const handleUpload = async () => {
-    if (!preview || preview === currentAvatar) {
-      alert('Vui lòng chọn một ảnh khác');
+    if (!selectedFile) {
+      showToast('Vui lòng chọn một ảnh khác', 'error');
       return;
     }
 
     try {
       setUploading(true);
-      await onUpload(preview);
+
+      // Step 1: Upload file and get URL
+      const uploadResponse = await userAPI.uploadAvatar(selectedFile);
+      const avatarUrl = uploadResponse.url || uploadResponse.data;
+      const message = uploadResponse.message || 'Tải ảnh lên thành công';
+
+      if (!avatarUrl) {
+        throw new Error('Không nhận được URL từ server');
+      }
+
+      // Step 2: Show temporary avatar and message
+      showToast(message, 'success');
+      await onUpload(avatarUrl);
       onClose();
+      
     } catch (error) {
-      alert('Lỗi khi tải ảnh lên');
+      console.error('Error uploading avatar:', error);
+      showToast(
+        error.response?.data?.message || 'Lỗi khi tải ảnh lên',
+        'error'
+      );
     } finally {
       setUploading(false);
     }
@@ -85,6 +108,7 @@ function AvatarUploadModal({ isOpen, onClose, onUpload, currentAvatar }) {
 
   const handleCancel = () => {
     setPreview(currentAvatar);
+    setSelectedFile(null);
     onClose();
   };
 
@@ -156,7 +180,7 @@ function AvatarUploadModal({ isOpen, onClose, onUpload, currentAvatar }) {
           <button
             className="btn btn-primary"
             onClick={handleUpload}
-            disabled={uploading || !preview}
+            disabled={uploading || !selectedFile}
           >
             {uploading ? 'Đang tải...' : 'Lưu ảnh'}
           </button>

@@ -45,6 +45,32 @@ api.interceptors.request.use(
   }
 );
 
+// 🔴 Response interceptor to handle 401 - redirect immediately
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // 🔴 Token expired - clear storage and trigger redirect
+      localStorage.removeItem(STORAGE_TOKEN);
+      localStorage.removeItem('user');
+      localStorage.removeItem('refreshToken');
+      
+      // Dispatch event to trigger redirect
+      window.dispatchEvent(new Event('tokenExpired'));
+      
+      // Notify other tabs via BroadcastChannel
+      try {
+        const channel = new BroadcastChannel('auth-channel');
+        channel.postMessage({ type: 'TOKEN_EXPIRED' });
+        channel.close();
+      } catch (err) {
+        console.warn('BroadcastChannel not supported');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // User API endpoints
 
 export const userAPI = {
@@ -76,6 +102,44 @@ export const userAPI = {
       throw error.response?.data || error.message;
     }
   },
+
+  // Deactivate user (set isActive = 0)
+  deactivateUser: async (userId) => {
+    try {
+      const response = await api.delete(`/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Upload avatar file
+  uploadAvatar: async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await api.post('/userProfile/upload-avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Update avatar URL for user
+  updateAvatarUrl: async (userId, avatarUrl) => {
+    try {
+      const response = await api.put(`/userProfile/${userId}`, { avatarUrl });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
   createUser: async (userdata) => {
    
   try {

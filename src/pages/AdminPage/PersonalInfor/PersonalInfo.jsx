@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../presentation/hooks/useAuth";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { useToast } from "../../../hooks/useToast";
-import { EditIcon, CheckIcon } from "../../../utils/Icons";
+import AvatarUploadModal from "../Topbar/AvatarUploadModal";
 import "./PersonalInfo.css";
 
-function PersonalInfo() {
+function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
+  const [id, setId] = useState("");
   const [fullName, setFullName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
@@ -14,26 +15,13 @@ function PersonalInfo() {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [userName, setUserName] = useState("");
   const [showEditMode, setShowEditMode] = useState(false);
-  const [editingFields, setEditingFields] = useState({
-    fullName: false,
-    email: false,
-    dateOfBirth: false,
-    gender: false,
-    phoneNumber: false
-  });
   const [saving, setSaving] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [originalValues, setOriginalValues] = useState({});
 
   const { getCurrentUser } = useAuth();
   const { profile, loading, loadProfile, loadProfileMe, updateProfileMe, updateUser } = useUser();
   const { showToast } = useToast();
-
-  const toggleFieldEdit = (fieldName) => {
-    setEditingFields(prev => ({
-      ...prev,
-      [fieldName]: !prev[fieldName]
-    }));
-  };
 
   const formatPhoneNumber = (phone) => {
     if (!phone) return '';
@@ -114,33 +102,32 @@ function PersonalInfo() {
         throw new Error('Không tìm thấy thông tin người dùng');
       }
 
-      // Nếu có thay đổi fullName hoặc email, cập nhật via /api/user/{id}
-      if (editingFields.fullName || editingFields.email) {
-        await updateUser(user.id, {
-          username: user.username,
-          fullName: fullName,
-          email: email,
-          isActive: true
-        });
-      }
+      // Cập nhật thông tin user cơ bản via /api/user/{id}
+    
 
       // Cập nhật thông tin hồ sơ khác via /api/userProfile/me
       await updateProfileMe({
+        id : user.id,
+        fullName: fullName,
+        email: email,
         phoneNumber: phoneNumber || null,
         avatarUrl: avatarUrl || null,
         gender: gender || null,
         dateOfBirth: formatDateForAPI(dateOfBirth)
       });
 
+      // Update avatar in parent component (Main.jsx) if changed
+      if (onAvatarChange && avatarUrl) {
+        onAvatarChange(avatarUrl);
+      }
+
       setShowEditMode(false);
-      setEditingFields({
-        fullName: false,
-        email: false,
-        dateOfBirth: false,
-        gender: false,
-        phoneNumber: false
-      });
       showToast('Cập nhật thông tin thành công!', 'success');
+      
+      // Trigger profile reload in Main.jsx to update fullName and other fields in Topbar
+      if (onProfileUpdate) {
+        onProfileUpdate();
+      }
     } catch (error) {
       showToast('Lỗi cập nhật thông tin: ' + error.message, 'error');
     } finally {
@@ -148,8 +135,9 @@ function PersonalInfo() {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = () => {  
     // Restore original values
+    
     setFullName(originalValues.fullName || "");
     setEmail(originalValues.email || "");
     setDateOfBirth(originalValues.dateOfBirth || "");
@@ -158,13 +146,12 @@ function PersonalInfo() {
     
     // Exit edit mode
     setShowEditMode(false);
-    setEditingFields({
-      fullName: false,
-      email: false,
-      dateOfBirth: false,
-      gender: false,
-      phoneNumber: false
-    });
+  };
+
+  const handleAvatarUpload = async (newAvatarUrl) => {
+    // Update local state with new avatar URL
+    setAvatarUrl(newAvatarUrl);
+    setShowAvatarModal(false);
   };
 
   useEffect(() => {
@@ -178,14 +165,15 @@ function PersonalInfo() {
 
         // Load basic user info (/user/{id})
         const data = await loadProfile();
-        setFullName(data.fullName || data.full_name || "");
-        setEmail(user?.email || "");
-        setAvatarUrl(data.avatarUrl || "");
         setUserName(user?.username || "");
-
         // Load personal profile info (/userProfile/me)
         const profileMeData = await loadProfileMe();
         const dobValue = formatDateFromAPI(profileMeData.dateOfBirth || profileMeData.birthDate || profileMeData.dob || "");
+       
+        setId(profileMeData.id || "");
+        setAvatarUrl(profileMeData.avatarUrl || null);
+        setFullName(profileMeData.fullName || "");
+        setEmail(profileMeData.email || "");
         setDateOfBirth(dobValue);
         setGender(convertGenderFromAPI(profileMeData.gender || ""));
         setPhoneNumber(profileMeData.phoneNumber || "");
@@ -226,6 +214,7 @@ function PersonalInfo() {
             onClick={() => {
               // Store original values before entering edit mode
               setOriginalValues({
+                avatarUrl,
                 fullName,
                 email,
                 dateOfBirth,
@@ -236,55 +225,67 @@ function PersonalInfo() {
             }}
             title="Chỉnh sửa trang cá nhân"
           >
-            <EditIcon /> Chỉnh sửa
+            Chỉnh sửa
           </button>
         )}
       </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="fullName">Tên đầy đủ</label>
-          <div className="input-wrapper">
-            <input
-              type="text"
-              id="fullName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="form-input"
-              readOnly={!showEditMode || !editingFields.fullName}
-            />
-            {showEditMode && (
-              <button
-                type="button"
-                className="input-icon-button"
-                onClick={() => toggleFieldEdit("fullName")}
-                title={editingFields.fullName ? "Lưu" : "Chỉnh sửa"}
-              >
-                {editingFields.fullName ? <CheckIcon /> : <EditIcon />}
-              </button>
+      {/* Avatar Section */}
+      <div className="avatar-section">
+        <div className="avatar-display">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="Avatar" className="avatar-image" />
+          ) : (
+            <div className="avatar-placeholder">
+              <i className="fa-solid fa-user"></i>
+            </div>
+          )}
+          {showEditMode && (
+            <button 
+              className="avatar-change-button"
+              onClick={() => setShowAvatarModal(true)}
+              title="Thay đổi ảnh đại diện"
+            >
+              <i className="fa-solid fa-camera"></i>
+            </button>
+          )}
+        </div>
+        <div className="avatar-info">
+          <div className="avatar-header">
+            {showEditMode ? (
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="form-input avatar-name-input"
+                  placeholder="Tên đầy đủ"
+                />
+              </div>
+            ) : (
+              <h3 className="avatar-name-display">{fullName || 'Người dùng'}</h3>
             )}
           </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <div className="input-wrapper">
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-input"
-              readOnly={!showEditMode || !editingFields.email}
-            />
-            {showEditMode && (
-              <button
-                type="button"
-                className="input-icon-button"
-                onClick={() => toggleFieldEdit("email")}
-                title={editingFields.email ? "Lưu" : "Chỉnh sửa"}
-              >
-                {editingFields.email ? <CheckIcon /> : <EditIcon />}
-              </button>
+          <div className="form-group">
+            {showEditMode ? (
+              <>
+              
+                <div className="input-wrapper">
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="email-display">
+              
+                <span className="email-value">{email || 'Chưa cập nhật'}</span>
+              </div>
             )}
           </div>
         </div>
@@ -294,142 +295,87 @@ function PersonalInfo() {
         <div className="form-group">
           <label htmlFor="dateOfBirth">Ngày sinh</label>
           <div className="input-wrapper">
-            {showEditMode && editingFields.dateOfBirth ? (
-              <>
-                <input
-                  type="date"
-                  id="dateOfBirth"
-                  value={dateOfBirth}
-                  onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="form-input"
-                />
-                <button
-                  type="button"
-                  className="input-icon-button"
-                  onClick={() => toggleFieldEdit("dateOfBirth")}
-                  title="Lưu"
-                >
-                  <CheckIcon />
-                </button>
-              </>
+            {showEditMode ? (
+              <input
+                type="date"
+                id="dateOfBirth"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                className="form-input"
+              />
             ) : (
-              <>
-                <input
-                  type="text"
-                  id="dateOfBirth"
-                  value={formatDateForDisplay(dateOfBirth)}
-                  className="form-input"
-                  readOnly
-                />
-                {showEditMode && (
-                  <button
-                    type="button"
-                    className="input-icon-button"
-                    onClick={() => toggleFieldEdit("dateOfBirth")}
-                    title="Chỉnh sửa"
-                  >
-                    <EditIcon />
-                  </button>
-                )}
-              </>
+              <input
+                type="text"
+                id="dateOfBirth"
+                value={formatDateForDisplay(dateOfBirth)}
+                className="form-input"
+                readOnly
+              />
             )}
           </div>
         </div>
         <div className="form-group">
           <label htmlFor="gender">Giới tính</label>
           <div className="input-wrapper">
-            {showEditMode && editingFields.gender ? (
-              <>
-                <select
-                  id="gender"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="form-input"
-                >
-                  <option value="">-- Chọn giới tính --</option>
-                  <option value="Nam">Nam</option>
-                  <option value="Nữ">Nữ</option>
-                </select>
-                <button
-                  type="button"
-                  className="input-icon-button"
-                  onClick={() => toggleFieldEdit("gender")}
-                  title="Lưu"
-                >
-                  <CheckIcon />
-                </button>
-              </>
+            {showEditMode ? (
+              <select
+                id="gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="form-input"
+              >
+                <option value="">-- Chọn giới tính --</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+              </select>
             ) : (
-              <>
-                <input
-                  type="text"
-                  id="gender"
-                  value={gender}
-                  className="form-input"
-                  readOnly
-                />
-                {showEditMode && (
-                  <button
-                    type="button"
-                    className="input-icon-button"
-                    onClick={() => toggleFieldEdit("gender")}
-                    title="Chỉnh sửa"
-                  >
-                    <EditIcon />
-                  </button>
-                )}
-              </>
+              <input
+                type="text"
+                id="gender"
+                value={gender}
+                className="form-input"
+                readOnly
+              />
             )}
           </div>
         </div>
       </div>
 
-      <div className="form-row form-row--full">
+      <div className="form-row">
         <div className="form-group">
           <label htmlFor="phoneNumber">Số điện thoại</label>
           <div className="input-wrapper">
-            {showEditMode && editingFields.phoneNumber ? (
-              <>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="form-input"
-                />
-                <button
-                  type="button"
-                  className="input-icon-button"
-                  onClick={() => toggleFieldEdit("phoneNumber")}
-                  title="Lưu"
-                >
-                  <CheckIcon />
-                </button>
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  id="phoneNumber"
-                  value={formatPhoneNumber(phoneNumber)}
-                  className="form-input"
-                  readOnly
-                />
-                {showEditMode && (
-                  <button
-                    type="button"
-                    className="input-icon-button"
-                    onClick={() => toggleFieldEdit("phoneNumber")}
-                    title="Chỉnh sửa"
-                  >
-                    <EditIcon />
-                  </button>
-                )}
-              </>
-            )}
+            <input
+              type={showEditMode ? "tel" : "text"}
+              id="phoneNumber"
+              value={showEditMode ? phoneNumber : formatPhoneNumber(phoneNumber)}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="form-input"
+              readOnly={!showEditMode}
+            />
+          </div>
+        </div>
+        <div className="form-group">
+          <label htmlFor="userId">ID</label>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              id="userId"
+              value={id}
+              className="form-input form-input--readonly"
+              readOnly
+            />
           </div>
         </div>
       </div>
+
+      {/* Avatar Upload Modal */}
+      <AvatarUploadModal 
+        isOpen={showAvatarModal}
+        onClose={() => setShowAvatarModal(false)}
+        onUpload={handleAvatarUpload}
+        currentAvatar={avatarUrl}
+      />
     </div>
   );
 }

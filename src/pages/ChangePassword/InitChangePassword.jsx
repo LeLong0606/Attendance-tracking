@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../presentation/hooks/useAuth';
-import { useToast } from '../../../hooks/useToast';
-import { getTempToken } from '../../../config/TokenHelper';
+import { useAuth } from '../../presentation/hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
+import { getTempToken } from '../../config/TokenHelper';
+import './InitChangePassword.css';
 
 const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, placeholder }) => (
   <div style={{ position: "relative", width: "100%" }}>
@@ -52,22 +53,24 @@ const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, plac
   </div>
 );
 
-function ChangePasswordModal({ isOpen, onClose }) {
+function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
   const { changePassword, changeInitialPassword } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const handleChangePassword = async () => {
-    // Check if using temp token (initial password change)
-    const tempToken = getTempToken();
-    const isInitialPasswordChange = !!tempToken;
+  // Detect if this is initial password change
+  const tempToken = getTempToken();
+  const isInitialPasswordChange = !!tempToken;
 
+  const handleChangePassword = async () => {
     // Validate inputs
     if (isInitialPasswordChange) {
       // For initial password change, only need new password
@@ -89,63 +92,54 @@ function ChangePasswordModal({ isOpen, onClose }) {
     }
 
     try {
+      setLoading(true);
+      
       if (isInitialPasswordChange) {
         // Change initial password using temp token
         const result = await changeInitialPassword(newPassword, confirmPassword);
         showToast(result.message || "Đổi mật khẩu thành công!", "success");
         
-        // Reset form
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-        setShowCurrentPassword(false);
-        setShowNewPassword(false);
-        setShowConfirmPassword(false);
-        
-        // Close modal and navigate to login
-      
-          // onClose();
-          // navigate('/', { replace: true });
-          window.location.reload();
-      
+        // Navigate to main after delay
+        setTimeout(() => {
+          navigate('/main', { replace: true });
+        }, 1500);
       } else {
         // Regular password change
         await changePassword(currentPassword, newPassword, confirmPassword);
         showToast("Đổi mật khẩu thành công!", "success");
         
-        // Reset form
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-        setShowCurrentPassword(false);
-        setShowNewPassword(false);
-        setShowConfirmPassword(false);
-        
-        // Close modal and navigate to main
+        // Navigate to main after delay
         setTimeout(() => {
-          onClose();
           navigate('/main', { replace: true });
         }, 1500);
       }
     } catch (error) {
       showToast(error.message || "Đổi mật khẩu thất bại. Vui lòng thử lại.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!isOpen) return null;
-
-  const tempToken = getTempToken();
-  const isInitialPasswordChange = !!tempToken;
+  const handleCancel = () => {
+    if (isInitialPasswordChange) {
+      // Can't cancel initial password change, go back to login
+      navigate('/login', { replace: true });
+    } else {
+      // Can cancel regular change
+      navigate('/main', { replace: true });
+    }
+  };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2 className="modal-header">
+    <div className="change-password-container">
+      <div className="change-password-box">
+        <h1 className="change-password-title">
           {isInitialPasswordChange ? "Đổi mật khẩu lần đầu" : "Đổi mật khẩu"}
-        </h2>
-        <div style={{ display: "flex", gap: "1rem", width: "100%", flexDirection: "column" }}>
+        </h1>
+
+        <div className="form-content">
           {!isInitialPasswordChange && (
-            <div>
+            <div className="form-group">
               <label>Mật khẩu hiện tại</label>
               <PasswordInputWithToggle
                 value={currentPassword}
@@ -156,7 +150,8 @@ function ChangePasswordModal({ isOpen, onClose }) {
               />
             </div>
           )}
-          <div>
+
+          <div className="form-group">
             <label>Mật khẩu mới</label>
             <PasswordInputWithToggle
               value={newPassword}
@@ -166,7 +161,8 @@ function ChangePasswordModal({ isOpen, onClose }) {
               placeholder="Nhập mật khẩu mới"
             />
           </div>
-          <div>
+
+          <div className="form-group">
             <label>Xác nhận mật khẩu mới</label>
             <PasswordInputWithToggle
               value={confirmPassword}
@@ -177,33 +173,21 @@ function ChangePasswordModal({ isOpen, onClose }) {
             />
           </div>
         </div>
-        <div style={{ display: "flex", gap: "1rem", justifyContent: "flex-end", marginTop: "1.5rem" }}>
+
+        <div className="form-buttons">
           <button
-            onClick={onClose}
-            style={{
-              padding: "8px 16px",
-              border: "1.5px solid #dbdfe6",
-              borderRadius: "6px",
-              backgroundColor: "#f5f5f5",
-              cursor: "pointer",
-              fontWeight: "500"
-            }}
+            onClick={handleCancel}
+            disabled={loading}
+            className="cancel-btn"
           >
-            Hủy
+            {isInitialPasswordChange ? "Quay lại" : "Hủy"}
           </button>
           <button
             onClick={handleChangePassword}
-            style={{
-              padding: "8px 16px",
-              border: "none",
-              borderRadius: "6px",
-              backgroundColor: "#667eea",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: "600"
-            }}
+            disabled={loading}
+            className="confirm-btn"
           >
-            Xác nhận
+            {loading ? "Đang xử lý..." : "Xác nhận"}
           </button>
         </div>
       </div>
@@ -211,4 +195,4 @@ function ChangePasswordModal({ isOpen, onClose }) {
   );
 }
 
-export default ChangePasswordModal;
+export default ChangePassword;
