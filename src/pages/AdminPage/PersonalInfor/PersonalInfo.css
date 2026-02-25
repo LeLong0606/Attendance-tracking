@@ -360,3 +360,46 @@ select.form-input option {
     padding: 1rem;
   }
 }
+
+/* Mobile - smaller input and button */
+@media (max-width: 480px) {
+  .avatar-name-input {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    padding: 0.4rem 0.6rem !important;
+    height: 40px !important;
+  }
+
+  .edit-page-button {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    gap: 0.3rem;
+  }
+
+  .edit-page-button svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .cancel-button,
+  .save-button {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    height: 36px;
+  }
+
+  .avatar-name-display {
+    font-size: 1.3rem;
+  }
+
+  .avatar-section {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .avatar-image,
+  .avatar-placeholder {
+    width: 60px;
+    height: 60px;
+  }
+}
