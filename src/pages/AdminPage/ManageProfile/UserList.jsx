@@ -16,6 +16,7 @@ function UserList() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isDeactivating, setIsDeactivating] = useState(false);
+  const [lockActionType, setLockActionType] = useState(null); // 'deactivate' or 'restore'
   const [currentPage, setCurrentPage] = useState(1);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -115,41 +116,59 @@ function UserList() {
     setCurrentPage(1);
   };
 
-  const handleLockToggle = async (userId) => {
+  const handleLockToggle = (userId) => {
     const user = users.find(u => u.id === userId);
     if (!user) return;
     
+    setSelectedUserId(userId);
+    setLockActionType(!user.isActive ? 'restore' : 'deactivate');
+    setShowConfirmModal(true);
+  };
+
+  const confirmLockToggle = async () => {
+    if (!selectedUserId || !lockActionType) return;
+
     try {
       setIsDeactivating(true);
       
-      if (!user.isActive) {
+      if (lockActionType === 'restore') {
         // User is inactive (green lock) - call restore API
-        await userAPI.restoreUser(userId);
+        await userAPI.restoreUser(selectedUserId);
         
         // Update user's isActive status
         const updatedUsers = users.map(u => 
-          u.id === userId ? { ...u, isActive: true } : u
+          u.id === selectedUserId ? { ...u, isActive: true } : u
         );
         setUsers(updatedUsers);
         
         showToast('Khôi phục người dùng thành công', 'success');
-      } else {
+      } else if (lockActionType === 'deactivate') {
         // User is active (red lock) - call delete API
-        await userAPI.deactivateUser(userId);
+        await userAPI.deactivateUser(selectedUserId);
         
         // Update user's isActive status
         const updatedUsers = users.map(u => 
-          u.id === userId ? { ...u, isActive: false } : u
+          u.id === selectedUserId ? { ...u, isActive: false } : u
         );
         setUsers(updatedUsers);
         
         showToast('Xóa người dùng thành công', 'success');
       }
+      
+      setShowConfirmModal(false);
+      setSelectedUserId(null);
+      setLockActionType(null);
     } catch (error) {
       showToast(translateErrorMessage(error), 'error');
     } finally {
       setIsDeactivating(false);
     }
+  };
+
+  const cancelLockToggle = () => {
+    setShowConfirmModal(false);
+    setSelectedUserId(null);
+    setLockActionType(null);
   };
 
   // Helper function to format phone number (show first 3 digits, hide rest with *)
@@ -490,6 +509,37 @@ function UserList() {
           </div>
         </div>
       )}
+      
+      {/* Lock Toggle Confirm Modal */}
+      {showConfirmModal && lockActionType && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+              {lockActionType === 'deactivate' 
+                ? 'Bạn có chắc chắn muốn vô hiệu hóa người dùng này?'
+                : 'Bạn có chắc chắn muốn khôi phục người dùng này?'
+              }
+            </p>
+            <div className="modal-buttons">
+              <button
+                className="cancel-button"
+                onClick={cancelLockToggle}
+                disabled={isDeactivating}
+              >
+                Hủy
+              </button>
+              <button
+                className="confirm-button"
+                onClick={confirmLockToggle}
+                disabled={isDeactivating}
+              >
+                {isDeactivating ? '...' : 'Xác nhận'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Edit User Modal */}
       {showEditModal && editingUser && (
         <div className="modal-overlay">
