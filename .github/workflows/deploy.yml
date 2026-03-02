@@ -1,0 +1,52 @@
+name: Deploy React Vite FE
+
+on:
+  push:
+    # LƯU Ý: Nếu nhánh chính của repo FE là 'main' thì đổi chữ 'master' thành 'main' nhé bro
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    name: Build and Deploy FE
+    runs-on: self-hosted
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Cleanup Old Environment
+        shell: cmd
+        run: |
+          echo "[INFO] Dang dung va xoa Container FE cu..."
+          docker rm -f attendance-tracking || echo "[INFO] Khong co container cu."
+
+          echo "[INFO] Dang xoa Image FE cu..."
+          docker rmi -f attendance-tracking || echo "[INFO] Khong co image cu."
+
+      - name: 3. Build Docker Image (No Cache)
+        shell: cmd
+        run: |
+          echo "[INFO] Bat dau build React app..."
+          docker build --no-cache -t attendance-tracking .
+
+      - name: 4. Run New Container
+        shell: cmd
+        run: |
+          echo "[INFO] Khoi dong giao dien FE..."
+          
+          REM ==========================================================
+          REM GIAI THICH CAU HINH
+          REM -d: Chay ngam
+          REM -p 3000:80 : Map cong 3000 tu Laptop vao cong 80 cua Nginx
+          REM ==========================================================
+          
+          docker run -d --restart unless-stopped ^
+            --name attendance-tracking-running ^
+            -p 3000:80 ^
+            attendance-tracking
+
+      - name: 5. System Cleanup
+        shell: cmd
+        run: |
+          echo "[INFO] Don dep rac Docker..."
+          docker image prune -f
