@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../../hooks/useToast';
 import { userAPI } from '../../../services/api';
 import { translateErrorMessage } from '../../../config/constants';
 import './ManageProfile.css';
 
-function UserList() {
-  const navigate = useNavigate();
+function UserList({ onPageChange }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -351,7 +349,7 @@ function UserList() {
           <button 
             className="btn-add-user" 
             title="Thêm người dùng mới"
-            onClick={() => navigate('/main/create-account')}
+            onClick={() => onPageChange('manage')}
           >
             <i className="fa-solid fa-plus"></i>
           </button>

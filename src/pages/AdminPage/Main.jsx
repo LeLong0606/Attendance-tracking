@@ -152,7 +152,10 @@ function Main() {
       case 'manage-grant':
         return <CreateUser />;
       case 'manage-users':
-        return <UserList />;
+        return <UserList onPageChange={(page) => {
+          setCurrentPage(page);
+          setSidebarOpen(false);
+        }} />;
       case 'input':
         return <InputWorkDay />;
       case 'view':
