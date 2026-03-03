@@ -112,7 +112,7 @@ function WorkDayTable() {
             employeeList = [
               {
                 id: currentUser.id,
-                fullName: currentUser.fullName || "Chưa cập nhật",
+                fullName: userProfile?.fullName || currentUser?.fullName || "Chưa cập nhật",
                 days: Array.from({ length: daysInMonth }, () => ""),
                 total: 26,
                 overtimeHours: 0,
