@@ -53,6 +53,32 @@ function InputWorkDay() {
     return false;
   };
 
+  // Helper function to extract day from YYYY-MM-DD format
+  const getDayFromDate = (dateString) => {
+    if (!dateString) return "";
+    const parts = dateString.split('-');
+    return parts[2] || "";
+  };
+
+  // Helper function to get max day for selected month/year
+  const getMaxDayForMonth = (month, year) => {
+    return new Date(year, month, 0).getDate();
+  };
+
+  // Helper function to construct date from day with fixed selected month/year
+  const constructDateWithDay = (day) => {
+    if (!day || day < 1) return "";
+    const maxDay = getMaxDayForMonth(selectedMonth, selectedYear);
+    const dayNum = parseInt(day);
+    
+    // Ensure day doesn't exceed max day for the month
+    if (dayNum > maxDay) return "";
+    
+    const dayStr = String(dayNum).padStart(2, '0');
+    const monthStr = String(selectedMonth).padStart(2, '0');
+    return `${selectedYear}-${monthStr}-${dayStr}`;
+  };
+
   const [users, setUsers] = useState([]);
   const [selectedUserIds, setSelectedUserIds] = useState(() => {
     // Load from localStorage on initial render
@@ -290,6 +316,31 @@ function InputWorkDay() {
       localStorage.setItem("advanceData", JSON.stringify(advanceData));
     } catch (error) {}
   }, [advanceData]);
+
+  // Validate advance dates when month/year changes
+  useEffect(() => {
+    setAdvanceData((prevData) => {
+      const updatedData = { ...prevData };
+      const maxDay = getMaxDayForMonth(selectedMonth, selectedYear);
+
+      for (const userId in updatedData) {
+        if (Array.isArray(updatedData[userId])) {
+          updatedData[userId] = updatedData[userId].map((entry) => {
+            if (entry.date) {
+              const day = parseInt(getDayFromDate(entry.date));
+              // If day exceeds max day for the month, clear the date
+              if (day > maxDay) {
+                return { ...entry, date: "" };
+              }
+            }
+            return entry;
+          });
+        }
+      }
+
+      return updatedData;
+    });
+  }, [selectedMonth, selectedYear]);
 
   // Note options
   const noteOptions = [
@@ -544,7 +595,7 @@ function InputWorkDay() {
 
     // Always fetch advance payment data
     payrollAPI
-      .getAdvancePaymentData(editingUserId)
+      .getAdvancePaymentData(editingUserId, selectedMonth, selectedYear)
       .then((apiAdvanceData) => {
         let advanceArray = [];
 
@@ -1302,24 +1353,24 @@ function InputWorkDay() {
                             >
                               Ngày ứng lương
                             </label>
-                            <input
-                              id={`advance-date-${editingUserId}-${index}`}
-                              type="date"
-                              value={entry.date || ""}
-                              onChange={(e) =>
-                                updateAdvanceEntry(
-                                  index,
-                                  "date",
-                                  e.target.value,
-                                )
-                              }
-                              className="advance-input"
-                              disabled={isFutureDate(
-                                selectedYear,
-                                selectedMonth,
-                              )}
-                              max={new Date().toISOString().split("T")[0]}
-                            />
+                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                              <input
+                                id={`advance-date-${editingUserId}-${index}`}
+                                type="number"
+                                min="1"
+                                max={getMaxDayForMonth(selectedMonth, selectedYear)}
+                                value={getDayFromDate(entry.date) || ""}
+                                onChange={(e) => {
+                                  const day = e.target.value;
+                                  const fullDate = day ? constructDateWithDay(parseInt(day)) : "";
+                                  updateAdvanceEntry(index, "date", fullDate);
+                                }}
+                                className="advance-input"
+                                placeholder="Ngày"
+                                style={{ width: '60px' }}
+                              />
+                              <span style={{ color: '#666', fontWeight: '500' }}>/{String(selectedMonth).padStart(2, '0')}/{selectedYear}</span>
+                            </div>
                             {entry.date && (
                               <div className="salary-display-value">
                                 {formatDateDisplay(entry.date)}

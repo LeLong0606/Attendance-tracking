@@ -379,11 +379,18 @@ export const payrollAPI = {
   },
 
   // Get advance payment history for an employee
-  getAdvancePaymentData: async (employeeId) => {
+  getAdvancePaymentData: async (employeeId, month, year) => {
     try {
-      const response = await api.get(
-        `/payroll/advance/user/${employeeId}`
-      );
+      const params = new URLSearchParams();
+      if (month) params.append('month', month);
+      if (year) params.append('year', year);
+      
+      const queryString = params.toString();
+      const url = queryString 
+        ? `/payroll/advance/user/${employeeId}?${queryString}`
+        : `/payroll/advance/user/${employeeId}`;
+      
+      const response = await api.get(url);
       const { data: responseData } = response;
       
       // Check nếu API trả về nested data structure: { success, data: [...] }
