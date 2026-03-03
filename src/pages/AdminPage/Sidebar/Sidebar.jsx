@@ -26,7 +26,7 @@ function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
       ],
     },
     { id: 'input', label: 'Nhập ngày công', Icon: DocumentIcon, role: 'admin' },
-    { id: 'view', label: 'Xem ngày công', Icon: ClipboardListIcon, role: 'all' },
+    { id: 'view', label: 'Xem bảng lương', Icon: ClipboardListIcon, role: 'all' },
   ];
 
   const filteredItems = menuItems.filter(
