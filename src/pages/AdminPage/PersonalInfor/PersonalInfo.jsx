@@ -93,6 +93,27 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
     return dateValue;
   };
 
+  // Convert from DD/MM/YYYY (input format) to YYYY-MM-DD (internal format)
+  const formatDateInputToDB = (dateInputValue) => {
+    if (!dateInputValue) return '';
+    const parts = dateInputValue.split('/');
+    if (parts.length === 3) {
+      const [day, month, year] = parts;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    return dateInputValue;
+  };
+
+  // Convert from YYYY-MM-DD to DD/MM/YYYY for display in edit mode
+  const formatDateForInput = (dateValue) => {
+    if (!dateValue) return '';
+    const parts = dateValue.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateValue;
+  };
+
   const handleSaveProfile = async () => {
     try {
       setSaving(true);
@@ -288,6 +309,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="form-input"
+                    placeholder="Forexample@email.com"
                   />
                 </div>
               </>
@@ -306,13 +328,17 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
           <label htmlFor="dateOfBirth">Ngày sinh</label>
           <div className="input-wrapper">
             {showEditMode ? (
-              <input
-                type="date"
-                id="dateOfBirth"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                className="form-input"
-              />
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="date"
+                  id="dateOfBirth"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="form-input"
+                  style={{ flex: 1 }}
+                />
+               
+              </div>
             ) : (
               <input
                 type="text"
@@ -361,6 +387,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
               value={showEditMode ? phoneNumber : formatPhoneNumber(phoneNumber)}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className="form-input"
+              placeholder={showEditMode ? "Nhập số điện thoại" : ""}
               readOnly={!showEditMode}
             />
           </div>
