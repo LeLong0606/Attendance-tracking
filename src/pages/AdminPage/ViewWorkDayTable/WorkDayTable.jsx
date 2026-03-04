@@ -5,7 +5,13 @@ import { useAuth } from "../../../presentation/hooks/useAuth";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { userAPI, payrollAPI } from "../../../services/api";
 import { USER_ROLES } from "../../../config/constants";
-import { getUserRole } from "../../../config/PermissionHelper";
+import { 
+  getUserRole,
+  isAdmin,
+  isHR,
+  hasPermission,
+} from "../../../config/PermissionHelper";
+import { PERMISSIONS } from "../../../config/constants";
 
 function WorkDayTable() {
   // Initialize with current month
@@ -31,16 +37,14 @@ function WorkDayTable() {
   const { getCurrentUser } = useAuth();
   const { loadProfile } = useUser();
 
-  // Helper function to check if user is employee (non-admin)
+  // Helper function to check if user is employee (only has read permission, no SYSTEM_USERS.Read)
   const isEmployeeRole = () => {
-    const role = getUserRole();
-    return role === USER_ROLES.USER;
+    return !hasPermission(PERMISSIONS.SYSTEM_USERS_READ);
   };
 
-  // Helper function to check if user is HR or Admin
+  // Helper function to check if user is HR or Admin (has SYSTEM_USERS.Read or higher)
   const isHROrAdmin = () => {
-    const role = getUserRole();
-    return role === USER_ROLES.HR || role === USER_ROLES.ADMIN;
+    return hasPermission(PERMISSIONS.SYSTEM_USERS_READ);
   };
 
   // Create date from selected year and month

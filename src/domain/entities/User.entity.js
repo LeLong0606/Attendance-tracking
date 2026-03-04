@@ -33,12 +33,12 @@ export class User {
 
   /**
    * Kiểm tra người dùng là Admin
+   * Admin phải có SYSTEM_USERS.Write permission
    */
   isAdmin() {
-    return (
-      this.username?.toLowerCase() === 'admin' ||
-      (Array.isArray(this.permissions) && 
-       this.permissions.some(p => p.startsWith('SYSTEM_')))
-    );
+    if (Array.isArray(this.permissions)) {
+      return this.permissions.includes('SYSTEM_USERS.Write');
+    }
+    return false;
   }
 }

@@ -280,6 +280,16 @@ function UserList({ onPageChange }) {
     setIsEditingMode(true);
   };
 
+  // Go to first page
+  const goToFirstPage = () => {
+    setCurrentPage(1);
+  };
+
+  // Go to last page
+  const goToLastPage = () => {
+    setCurrentPage(totalPages);
+  };
+
   const handleEditInputChange = (field, value) => {
     setEditingUser(prev => ({
       ...prev,
@@ -442,10 +452,10 @@ function UserList({ onPageChange }) {
                     <div className="action-buttons">
                       <button 
                         className="btn-edit" 
-                        title="Chỉnh sửa"
+                        title="Xem"
                         onClick={() => handleEditUser(user)}
                       >
-                        <i className="fa-solid fa-pen"></i>
+                        <i className="fa-solid fa-eye"></i>
                       </button>
                       <button
                         className={`btn-lock ${
@@ -487,11 +497,19 @@ function UserList({ onPageChange }) {
             <div className="pagination-controls">
               <button
                 className="pagination-button"
+                onClick={goToFirstPage}
+                disabled={currentPage === 1}
+                title="Trang đầu"
+              >
+                <i className="fa-solid fa-step-backward"></i>
+              </button>
+              <button
+                className="pagination-button"
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 title="Trang trước"
               >
-                <i className="fa-solid fa-chevron-left"></i> Trước
+                <i className="fa-solid fa-chevron-left"></i> 
               </button>
               <div className="pagination-info-center">
                 <span>Trang <strong>{currentPage}</strong> / {totalPages}</span>
@@ -502,7 +520,15 @@ function UserList({ onPageChange }) {
                 disabled={currentPage === totalPages}
                 title="Trang sau"
               >
-                Sau <i className="fa-solid fa-chevron-right"></i>
+                <i className="fa-solid fa-chevron-right"></i>
+              </button>
+              <button
+                className="pagination-button"
+                onClick={goToLastPage}
+                disabled={currentPage === totalPages}
+                title="Trang cuối"
+              >
+                <i className="fa-solid fa-step-forward"></i>
               </button>
             </div>
           )}
@@ -544,7 +570,7 @@ function UserList({ onPageChange }) {
       {showEditModal && editingUser && (
         <div className="modal-overlay">
           <div className="modal-content edit-user-modal">
-            <h3 className="modal-header">Chỉnh sửa thông tin người dùng</h3>
+            <h3 className="modal-header">Thông tin chi tiết người dùng</h3>
             
             <div className="edit-user-form">
               <div className="form-group">
@@ -584,7 +610,7 @@ function UserList({ onPageChange }) {
                 <label>Số điện thoại</label>
                 <input
                   type="tel"
-                  value={isEditingMode ? (editingUser.phone || '') : formatPhoneNumber(editingUser.phone || '')}
+                  value={editingUser.phone || ''}
                   onChange={(e) => handleEditInputChange('phone', e.target.value)}
                   className="form-input"
                   placeholder="Nhập số điện thoại"

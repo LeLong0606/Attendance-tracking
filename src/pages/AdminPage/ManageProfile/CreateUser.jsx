@@ -139,7 +139,29 @@ function CreateUser() {
   };
 
   const userNameChange = (e) => {
-    setUserName(e.target.value);
+    const rawValue = e.target.value;
+    
+    // Check for Vietnamese diacritical marks
+    const hasVietnameseMark = /[\u0300-\u036f]|[àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ]/i.test(rawValue);
+    
+    // Check for whitespace
+    const hasWhitespace = /\s/.test(rawValue);
+    
+    // Show toast if user tries to input Vietnamese marks or spaces
+    if (hasVietnameseMark) {
+      showToast('Username không được chứa dấu tiếng Việt', 'warning');
+    }
+    if (hasWhitespace) {
+      showToast('Username không được chứa khoảng trắng', 'warning');
+    }
+    
+    // Process the value: remove Vietnamese diacritical marks and whitespace
+    const value = rawValue
+      .normalize('NFD') // Tách dấu ra khỏi ký tự
+      .replace(/[\u0300-\u036f]/g, '') // Xóa dấu diacritical của tiếng Việt
+      .replace(/\s/g, ''); // Xóa khoảng trắng
+    
+    setUserName(value);
   };
 
   const passwordChange = (e) => {

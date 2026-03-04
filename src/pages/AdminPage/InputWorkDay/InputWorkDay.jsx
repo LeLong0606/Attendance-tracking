@@ -680,6 +680,11 @@ function InputWorkDay() {
 
     // Check if user already selected
     if (selectedUserIds.includes(user.id)) {
+      // Update user update order - move to front
+      const newOrder = userUpdateOrder.filter((id) => id !== user.id);
+      newOrder.unshift(user.id);
+      setUserUpdateOrder(newOrder);
+
       // Just set as editing user
       setEditingUserId(user.id);
       setShowModal(true);
@@ -1594,7 +1599,7 @@ function InputWorkDay() {
         <div className="employee-cards-container">
           <label className="cards-label">Nhân viên đã chọn:</label>
           <div className="employee-cards-grid">
-            {userUpdateOrder.slice(0, 5).map((userId) => {
+            {userUpdateOrder.slice(0, 6).map((userId) => {
               const user = users.find((u) => u.id === userId);
               if (!user) return null;
 
@@ -1645,6 +1650,11 @@ function InputWorkDay() {
                     <button
                       className="employee-card-button"
                       onClick={() => {
+                        // Update user update order - move to front
+                        const newOrder = userUpdateOrder.filter((id) => id !== userId);
+                        newOrder.unshift(userId);
+                        setUserUpdateOrder(newOrder);
+
                         // Initialize original salary data from current state
                         setOriginalSalaryData((prev) => ({
                           ...prev,

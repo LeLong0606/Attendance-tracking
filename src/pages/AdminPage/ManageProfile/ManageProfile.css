@@ -875,6 +875,9 @@ button {
   position: sticky;
   top: 0;
   z-index: 10;
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .user-list-table th {
@@ -885,6 +888,17 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+.user-list-table tbody {
+  display: block;
+  height: 490px;
+  overflow-y: auto;
+}
+
+.user-list-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .user-list-table td {
