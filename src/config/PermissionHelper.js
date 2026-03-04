@@ -34,10 +34,40 @@ export const isHR = () => {
 
 /**
  * Kiểm tra user có quyền HR không (có SYSTEM_USERS.Read)
+ * HR có quyền:
+ * - CONTENT_POSTS: Read, Write, Export, Approve
+ * - CONTENT_COMMENTS: Read, Write, Export, Approve
+ * - SYSTEM_USERS: Read
+ * - REPORT_ANALYTICS: Read, Export
+ * - HR_TIMEKEEPING: Read, Write, Delete, Export, Import, Approve, Execute
  * @returns {boolean}
  */
 export const hasHRAccess = () => {
   return hasPermission(PERMISSIONS.SYSTEM_USERS_READ);
+};
+
+/**
+ * Kiểm tra user có quyền quản lý Content Posts không
+ * @returns {boolean}
+ */
+export const hasContentPostsAccess = () => {
+  return hasPermission(PERMISSIONS.CONTENT_POSTS_WRITE);
+};
+
+/**
+ * Kiểm tra user có quyền quản lý Comments không
+ * @returns {boolean}
+ */
+export const hasContentCommentsAccess = () => {
+  return hasPermission(PERMISSIONS.CONTENT_COMMENTS_WRITE);
+};
+
+/**
+ * Kiểm tra user có quyền xem Analytics không
+ * @returns {boolean}
+ */
+export const hasAnalyticsAccess = () => {
+  return hasPermission(PERMISSIONS.REPORT_ANALYTICS_READ);
 };
 
 /**
@@ -57,11 +87,11 @@ export const hasManageAccountAccess = () => {
 };
 
 /**
- * Kiểm tra user có quyền nhập ngày công không (Admin hoặc HR - những người có SYSTEM_USERS.Read)
+ * Kiểm tra user có quyền nhập ngày công không (Admin hoặc HR - những người có HR_TIMEKEEPING.Write)
  * @returns {boolean}
  */
 export const hasInputWorkDayAccess = () => {
-  return hasPermission(PERMISSIONS.SYSTEM_USERS_READ);
+  return hasPermission(PERMISSIONS.HR_TIMEKEEPING_WRITE) || hasPermission(PERMISSIONS.SYSTEM_USERS_WRITE);
 };
 
 /**

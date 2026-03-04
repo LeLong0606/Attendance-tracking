@@ -37,14 +37,14 @@ function WorkDayTable() {
   const { getCurrentUser } = useAuth();
   const { loadProfile } = useUser();
 
-  // Helper function to check if user is employee (only has read permission, no SYSTEM_USERS.Read)
+  // Helper function to check if user is employee (only has read permission, no write)
   const isEmployeeRole = () => {
-    return !hasPermission(PERMISSIONS.SYSTEM_USERS_READ);
+    return !hasPermission(PERMISSIONS.HR_TIMEKEEPING_WRITE);
   };
 
-  // Helper function to check if user is HR or Admin (has SYSTEM_USERS.Read or higher)
+  // Helper function to check if user is HR or Admin (has write permission)
   const isHROrAdmin = () => {
-    return hasPermission(PERMISSIONS.SYSTEM_USERS_READ);
+    return hasPermission(PERMISSIONS.HR_TIMEKEEPING_WRITE) || hasPermission(PERMISSIONS.SYSTEM_USERS_WRITE);
   };
 
   // Create date from selected year and month
