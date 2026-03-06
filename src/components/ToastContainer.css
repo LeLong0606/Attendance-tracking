@@ -97,6 +97,7 @@
 
 .toast-message {
   flex: 1;
+  white-space: pre-line;
 }
 
 .toast-border {

@@ -94,6 +94,15 @@ function ChangePasswordModal({ isOpen, onClose }) {
         // Đổi mật khẩu lần đầu bằng temp token
         const result = await changeInitialPassword(newPassword, confirmPassword);
         showToast(result.message || "Đổi mật khẩu thành công!", "success");
+
+        // Nếu backend chưa trả access token thì về login và chặn toast hết phiên cho lần điều hướng này
+        if (!result?.hasAccessToken) {
+          sessionStorage.setItem('skip-auth-expired-toast', '1');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+          return;
+        }
         
         // Đặt lại form
         setCurrentPassword("");
@@ -129,7 +138,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
         }, 1500);
       }
     } catch (error) {
-      showToast(translateErrorMessage(error.message), "error");
+      showToast(translateErrorMessage(error), "error");
     }
   };
 

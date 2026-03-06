@@ -172,7 +172,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
       // Lấy user ID từ token
       const user = getCurrentUser();
       if (!user) {
-        console.warn('⚠️ No user found in token during save - redirecting to login...');
+     
         // Token invalid/expired - redirect ngay, toast hiện sau
         sessionStorage.setItem('auth-expired-toast', '1');
         localStorage.clear();
@@ -207,7 +207,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
         onProfileUpdate();
       }
     } catch (error) {
-      showToast(translateErrorMessage(error.message), 'error');
+      showToast(translateErrorMessage(error), 'error');
     } finally {
       setSaving(false);
     }
@@ -239,7 +239,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
        
         const user = getCurrentUser();
         if (!user) {
-          console.warn('⚠️ No user found in token - redirecting to login...');
+     
           // Token invalid/expired - redirect ngay, toast hiện sau
           sessionStorage.setItem('auth-expired-toast', '1');
           localStorage.clear();
@@ -272,7 +272,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
           phoneNumber: profileMeData.phoneNumber || "",
         });
       } catch (error) {
-        console.error('❌ Error loading profile:', error);
+     
         showToast('Lỗi tải thông tin cá nhân: ' + error.message, 'error', 2000);
         // Nếu lỗi liên quan đến token, redirect ngay (toast sẽ hiện sau)
         if (error.message && (error.message.includes('token') || error.message.includes('unauthorized') || error.message.includes('redirecting'))) {

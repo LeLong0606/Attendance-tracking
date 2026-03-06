@@ -45,6 +45,40 @@ export const ERROR_MESSAGE_TRANSLATIONS = {
 // Hàm dịch message
 export const translateErrorMessage = (error) => {
   if (!error) return 'Lỗi hệ thống. Vui lòng thử lại sau.';
+
+  const fieldNameMap = {
+    NewPassword: 'Mật khẩu mới',
+    ConfirmNewPassword: 'Xác nhận mật khẩu mới',
+    OldPassword: 'Mật khẩu cũ',
+    Username: 'Tên đăng nhập',
+    Password: 'Mật khẩu',
+    FullName: 'Họ và tên',
+    Email: 'Email',
+    PhoneNumber: 'Số điện thoại',
+    DateOfBirth: 'Ngày sinh',
+    Gender: 'Giới tính',
+  };
+
+  const formatValidationErrors = (errors) => {
+    if (!errors || typeof errors !== 'object') return '';
+
+    return Object.entries(errors)
+      .flatMap(([field, messages]) => {
+        const label = fieldNameMap[field] || field;
+        const messageList = Array.isArray(messages) ? messages : [messages];
+        return messageList
+          .filter(Boolean)
+          .map((msg) => `${label}: ${msg}`);
+      })
+      .join('\n');
+  };
+
+  const errorPayload = error?.response?.data || error?.data || error;
+  const validationDetail = formatValidationErrors(errorPayload?.errors);
+  if (validationDetail) {
+    const baseMessage = errorPayload?.message || 'Dữ liệu đầu vào không hợp lệ.';
+    return `${baseMessage}\n${validationDetail}`;
+  }
   
   const errorString = error.toString ? error.toString() : String(error);
   const errorMessage = error.message ? error.message : errorString;

@@ -1,12 +1,50 @@
 /**
  * Việt hóa error message từ tiếng Anh sang tiếng Việt
- * @param {string} errorMessage - Thông báo lỗi gốc
+ * @param {string|Object} errorMessage - Thông báo lỗi gốc hoặc object lỗi
  * @returns {string} Thông báo lỗi được việt hóa
  */
 export const translateErrorMessage = (errorMessage) => {
   if (!errorMessage) return 'Lỗi hệ thống. Vui lòng thử lại sau.';
 
-  const errorStr = errorMessage.toString().toLowerCase();
+  const fieldNameMap = {
+    NewPassword: 'Mật khẩu mới',
+    ConfirmNewPassword: 'Xác nhận mật khẩu mới',
+    OldPassword: 'Mật khẩu cũ',
+    Username: 'Tên đăng nhập',
+    Password: 'Mật khẩu',
+    FullName: 'Họ và tên',
+    Email: 'Email',
+    PhoneNumber: 'Số điện thoại',
+    DateOfBirth: 'Ngày sinh',
+    Gender: 'Giới tính',
+  };
+
+  const formatValidationErrors = (errors) => {
+    if (!errors || typeof errors !== 'object') return '';
+
+    return Object.entries(errors)
+      .flatMap(([field, messages]) => {
+        const label = fieldNameMap[field] || field;
+        const messageList = Array.isArray(messages) ? messages : [messages];
+        return messageList
+          .filter(Boolean)
+          .map((msg) => `${label}: ${msg}`);
+      })
+      .join('\n');
+  };
+
+  const payload = errorMessage?.response?.data || errorMessage?.data || errorMessage;
+  const validationDetail = formatValidationErrors(payload?.errors);
+  if (validationDetail) {
+    const baseMessage = payload?.message || 'Dữ liệu đầu vào không hợp lệ.';
+    return `${baseMessage}\n${validationDetail}`;
+  }
+
+  const messageText = typeof errorMessage === 'string'
+    ? errorMessage
+    : (payload?.message || errorMessage?.message || errorMessage?.toString?.() || '');
+
+  const errorStr = messageText.toLowerCase();
 
   // Network errors
   if (errorStr.includes('network') || errorStr.includes('failed to fetch')) {
@@ -53,8 +91,8 @@ export const translateErrorMessage = (errorMessage) => {
   }
 
   // Generic error - return original message if it's already in Vietnamese
-  if (/[À-ỿ]/.test(errorMessage)) {
-    return errorMessage;
+  if (/[À-ỿ]/.test(messageText)) {
+    return messageText;
   }
 
   // Default fallback

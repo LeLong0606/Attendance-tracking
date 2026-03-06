@@ -83,8 +83,7 @@ function CreateUser() {
       setUserName("");
       setPassword("");
     } catch (error) {
-      const errorMessage = error.detail || error.message;
-      showToast(translateErrorMessage(errorMessage), "error");
+      showToast(translateErrorMessage(error), "error");
     }
   };
 

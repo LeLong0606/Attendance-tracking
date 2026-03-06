@@ -21,9 +21,16 @@ function AppContent() {
   useEffect(() => {
     if (location.pathname !== ROUTES.LOGIN) return;
 
+    const shouldSkipExpiredToast = sessionStorage.getItem('skip-auth-expired-toast') === '1';
+    if (shouldSkipExpiredToast) {
+      sessionStorage.removeItem('skip-auth-expired-toast');
+      sessionStorage.removeItem('auth-expired-toast');
+      return;
+    }
+
     const shouldShowExpiredToast = sessionStorage.getItem('auth-expired-toast') === '1';
     if (shouldShowExpiredToast) {
-      toast.showToast('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
+      toast.showToast('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'warning');
       sessionStorage.removeItem('auth-expired-toast');
     }
   }, [location.pathname, toast]);
@@ -46,7 +53,13 @@ function AppContent() {
     const token = localStorage.getItem(STORAGE_TOKEN);
     // Nếu không có token và đang ở /main, redirect ngay
     if (!token && location.pathname === ROUTES.MAIN) {
-      toast.showToast('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'error');
+      const shouldSkipExpiredToast = sessionStorage.getItem('skip-auth-expired-toast') === '1';
+      if (shouldSkipExpiredToast) {
+        sessionStorage.removeItem('skip-auth-expired-toast');
+        navigate(ROUTES.LOGIN);
+        return;
+      }
+      toast.showToast('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'warning');
       navigate(ROUTES.LOGIN);
     }
   }, [location.pathname, navigate]);

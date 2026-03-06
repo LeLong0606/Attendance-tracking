@@ -131,7 +131,7 @@ export const useAuth = () => {
       
       return { success: true };
     } catch (err) {
-      setError(err.message || 'Thay đổi mật khẩu thất bại');
+      setError(err?.message || err?.error || err?.detail || err?.data?.message || 'Thay đổi mật khẩu thất bại');
       throw err;
     } finally {
       setLoading(false);
@@ -177,9 +177,13 @@ export const useAuth = () => {
         }
       }
       
-      return { success: true, message: response.message };
+      return {
+        success: true,
+        message: response.message,
+        hasAccessToken: !!response.accessToken,
+      };
     } catch (err) {
-      setError(err.message || 'Thay đổi mật khẩu thất bại');
+      setError(err?.message || err?.error || err?.detail || err?.data?.message || 'Thay đổi mật khẩu thất bại');
       throw err;
     } finally {
       setLoading(false);

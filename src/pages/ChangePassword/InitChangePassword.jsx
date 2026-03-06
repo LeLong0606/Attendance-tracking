@@ -100,6 +100,15 @@ function ChangePassword() {
         const result = await changeInitialPassword(newPassword, confirmPassword);
         showToast(result.message || "Đổi mật khẩu thành công!", "success");
         
+        // Nếu backend chưa trả access token thì về login, đồng thời chặn toast hết phiên cho case đặc biệt này
+        if (!result?.hasAccessToken) {
+          sessionStorage.setItem('skip-auth-expired-toast', '1');
+          setTimeout(() => {
+            navigate('/', { replace: true });
+          }, 1500);
+          return;
+        }
+
         // Navigate to main after delay
         setTimeout(() => {
           navigate('/main', { replace: true });
@@ -115,7 +124,7 @@ function ChangePassword() {
         }, 1500);
       }
     } catch (error) {
-      showToast(translateErrorMessage(error.message), "error");
+      showToast(translateErrorMessage(error), "error");
     } finally {
       setLoading(false);
     }

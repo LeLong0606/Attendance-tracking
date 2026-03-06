@@ -212,12 +212,11 @@ export class AuthDataSource {
       
       return responseData;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error || 
-                          error.message || 
-                          'Thay đổi mật khẩu thất bại';
-      const err = new Error(errorMessage);
-      throw err;
+      const errorData = error.response?.data;
+      if (errorData) {
+        throw errorData;
+      }
+      throw error;
     }
   }
 
@@ -271,12 +270,11 @@ export class AuthDataSource {
       
       return responseData;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error || 
-                          error.message || 
-                          'Thay đổi mật khẩu thất bại';
-      const err = new Error(errorMessage);
-      throw err;
+      const errorData = error.response?.data;
+      if (errorData) {
+        throw errorData;
+      }
+      throw error;
     }
   }
 }

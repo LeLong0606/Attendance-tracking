@@ -57,7 +57,7 @@ function Login() {
       }
     } catch (error) {
       setIsSubmitting(false);
-      showToast(translateErrorMessage(error.message || 'Đăng nhập thất bại'), 'error');
+      showToast(translateErrorMessage(error), 'error');
     }
   };
 
