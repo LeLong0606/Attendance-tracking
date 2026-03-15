@@ -6,7 +6,7 @@
 // API Configuration
  //const API_BASE_URL = '/api';
 // Sẽ được proxy qua Vite dev server đến: 
-export const API_BASE_URL ='https://desktop-8l98oc0.tail542363.ts.net/workdaymanagement';
+export const API_BASE_URL ='https://desktop-8l98oc0.tail542363.ts.net/workdaymanagement/api';
 
 
 
