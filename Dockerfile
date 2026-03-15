@@ -24,19 +24,10 @@ RUN echo "server { \
     listen 443 ssl; \
     ssl_certificate /https/desktop-8l98oc0.tail542363.ts.net.crt; \
     ssl_certificate_key /https/desktop-8l98oc0.tail542363.ts.net.key; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    \
     location / { \
+        root /usr/share/nginx/html; \
+        index index.html index.htm; \
         try_files \$uri \$uri/ /index.html; \
-    } \
-    \
-    location /assets/ { \
-        try_files \$uri =404; \
-    } \
-    \
-    location /images/ { \
-        try_files \$uri =404; \
     } \
 }" > /etc/nginx/conf.d/default.conf
 
