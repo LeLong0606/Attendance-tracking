@@ -31,7 +31,7 @@ body {
   text-align: center;
   padding: 20px 0;
   border-bottom: 1px solid silver;
-  caret-color: transparent;
+ caret-color: #000;
   cursor: pointer;
 }
 
@@ -54,7 +54,7 @@ form .txt_field {
   border: none;
   background: none;
   outline: none;
-  caret-color: transparent;
+  caret-color: #000;
 }
 
 .txt_field label {
@@ -100,7 +100,7 @@ form .txt_field {
   margin: -5px 0 20px 5px;
   color: #a6a6a6;
   cursor: pointer;
-  caret-color: transparent;
+  caret-color: #000;
 }
 
 .pass:hover {
@@ -117,7 +117,7 @@ input[type="submit"] {
   color: #e9f4fb;
   font-weight: 700;
   cursor: pointer;
-  caret-color: transparent;
+  caret-color: #000;
   outline: none;
 }
 
