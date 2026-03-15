@@ -4,6 +4,7 @@ import { useUser } from "../../../presentation/hooks/useUser";
 import { useToast } from "../../../hooks/useToast";
 import { translateErrorMessage } from "../../../utils/errorHandler";
 import AvatarUploadModal from "../Topbar/AvatarUploadModal";
+import { FaUser, FaCamera, FaRegCalendarAlt } from "react-icons/fa";
 import "./PersonalInfo.css";
 
 function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
@@ -339,7 +340,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
             <img src={avatarUrl} alt="Avatar" className="avatar-image" />
           ) : (
             <div className="avatar-placeholder">
-              <i className="fa-solid fa-user"></i>
+              <FaUser />
             </div>
           )}
           {showEditMode && (
@@ -348,7 +349,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
               onClick={() => setShowAvatarModal(true)}
               title="Thay đổi ảnh đại diện"
             >
-              <i className="fa-solid fa-camera"></i>
+              <FaCamera />
             </button>
           )}
         </div>
@@ -425,7 +426,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
                   title="Chọn ngày từ lịch"
                   aria-label="Chọn ngày sinh từ lịch"
                 >
-                  <i className="fa-regular fa-calendar"></i>
+                  <FaRegCalendarAlt />
                 </button>
                 <input
                   ref={hiddenDatePickerRef}

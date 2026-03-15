@@ -4,6 +4,7 @@ import { useAuth } from '../../presentation/hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { getTempToken } from '../../config/TokenHelper';
 import { translateErrorMessage } from '../../utils/errorHandler';
+import { FaEye } from 'react-icons/fa';
 import './InitChangePassword.css';
 
 const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, placeholder }) => (
@@ -49,7 +50,7 @@ const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, plac
         pointerEvents: "auto"
       }}
     >
-      <i className="fa-solid fa-eye"></i>
+      <FaEye />
     </button>
   </div>
 );

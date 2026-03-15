@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../presentation/hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { translateErrorMessage } from '../../utils/errorHandler';
+import { FaEye } from 'react-icons/fa';
 import './Login.css';
 
 /**
@@ -94,7 +95,7 @@ function Login() {
             className="toggle-password"
             title={showPassword ? "Ẩn mật khẩu" : "Hiển thị mật khẩu"}
           >
-            <i className="fa-solid fa-eye"></i>
+            <FaEye />
           </button>
           <span></span>
           <label htmlFor="password" className={isSubmitting ? 'hidden-animation' : ''}>Mật khẩu</label>

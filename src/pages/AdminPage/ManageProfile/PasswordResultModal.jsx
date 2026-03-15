@@ -1,4 +1,5 @@
 import { useToast } from "../../../hooks/useToast";
+import { FaCopy } from "react-icons/fa";
 
 function PasswordResultModal({ isOpen, password, username, onClose }) {
   const { showToast } = useToast();
@@ -57,7 +58,7 @@ function PasswordResultModal({ isOpen, password, username, onClose }) {
                 whiteSpace: "nowrap",
               }}
             >
-              <i className="fa-solid fa-copy"></i> Copy
+              <FaCopy /> Copy
             </button>
           </div>
           <p style={{ marginTop: "0.5rem", fontSize: "12px", color: "red" }}>

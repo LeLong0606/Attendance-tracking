@@ -325,7 +325,7 @@ button {
   margin-bottom: 1rem;
 }
 
-.error-message-box i {
+.error-message-box svg {
   flex-shrink: 0;
   color: #ef4444;
   margin-top: 2px;
@@ -781,7 +781,7 @@ button {
   color: #16a34a !important;
 }
 
-.filter-menu-item:nth-child(1) .checkbox-text i {
+.filter-menu-item:nth-child(1) .checkbox-text svg {
   color: #16a34a !important;
 }
 
@@ -793,7 +793,7 @@ button {
   color: #dc2626 !important;
 }
 
-.filter-menu-item:nth-child(2) .checkbox-text i {
+.filter-menu-item:nth-child(2) .checkbox-text svg {
   color: #dc2626 !important;
 }
 
@@ -835,9 +835,22 @@ button {
   color: #667eea;
 }
 
-.loading-spinner i {
+.loading-spinner svg {
   font-size: 2rem;
   margin-right: 0.5rem;
+}
+
+.loading-spinner .spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Empty state */
@@ -847,7 +860,7 @@ button {
   color: #999;
 }
 
-.empty-state i {
+.empty-state svg {
   font-size: 3rem;
   color: #ddd;
   margin-bottom: 1rem;
@@ -1132,7 +1145,7 @@ button {
   color: #999;
 }
 
-.pagination-button i {
+.pagination-button svg {
   font-size: 0.8rem;
 }
 
@@ -1330,7 +1343,7 @@ button {
     gap: 0.75rem;
   }
 
-  .error-message-box i {
+  .error-message-box svg {
     font-size: 0.95rem;
   }
 
@@ -1345,7 +1358,7 @@ button {
     font-size: 0.85rem;
   }
 
-  .create-button i {
+  .create-button svg {
     font-size: 0.9rem;
   }
 }

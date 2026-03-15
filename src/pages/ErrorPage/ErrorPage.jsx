@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle, faHome, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FaExclamationTriangle, FaHome, FaArrowLeft } from 'react-icons/fa';
 import './ErrorPage.css';
 
 function ErrorPage() {
@@ -50,7 +49,7 @@ function ErrorPage() {
     <div className="error-container">
       <div className="error-content">
         <div className="error-icon">
-          <FontAwesomeIcon icon={faExclamationTriangle} />
+          <FaExclamationTriangle />
         </div>
         
         <h1 className="error-code">{errorData.code}</h1>
@@ -73,7 +72,7 @@ function ErrorPage() {
             onClick={handleGoBack}
             title="Quay lại trang trước"
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <FaArrowLeft />
             Quay lại
           </button>
           
@@ -82,7 +81,7 @@ function ErrorPage() {
             onClick={handleGoHome}
             title="Về trang chủ"
           >
-            <FontAwesomeIcon icon={faHome} />
+            <FaHome />
             Trang chủ
           </button>
         </div>

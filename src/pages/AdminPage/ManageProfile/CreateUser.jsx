@@ -4,6 +4,13 @@ import { getUserFromToken } from "../../../config/TokenHelper";
 import { useToast } from "../../../hooks/useToast";
 import { translateErrorMessage } from "../../../utils/errorHandler";
 import { userAPI } from "../../../services/api";
+import {
+  FaUserPlus,
+  FaEye,
+  FaEyeSlash,
+  FaInfoCircle,
+  FaCheck,
+} from "react-icons/fa";
 import "./ManageProfile.css";
 import PasswordResultModal from "./PasswordResultModal";
 
@@ -177,7 +184,7 @@ function CreateUser() {
     <div className="manage-profile-container">
       <div className="create-user-header">
         <div className="header-icon">
-          <i className="fa-solid fa-user-plus"></i>
+          <FaUserPlus />
         </div>
         <div className="header-content">
           <h2 className="header-title">Thêm thành viên mới</h2>
@@ -264,13 +271,13 @@ function CreateUser() {
                 onClick={togglePasswordVisibility}
                 title={showPassword ? "Ẩn mật khẩu" : "Hiển thị mật khẩu"}
               >
-                <i className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
         </div>
       ) : (<div className="error-message-box">
-        <i className="fa-solid fa-circle-info"></i>
+        <FaInfoCircle />
         <span> Mật khẩu này chỉ tạo 1 lần duy nhất. Vui lòng ghi chú lại ở bước tiếp theo.</span>
       </div>) }
 
@@ -279,7 +286,7 @@ function CreateUser() {
       <div className="button-container">
       
         <button className="create-button" onClick={openModalHandler}>
-          <i className="fa-solid fa-check"></i>
+          <FaCheck />
           Lưu thành viên
         </button>
       </div>

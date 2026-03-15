@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./InputWorkDay.css";
 import { userAPI, payrollAPI } from "../../../services/api";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import { FaPlus, FaTrash, FaCalendarAlt } from "react-icons/fa";
 import { useToast } from "../../../hooks/useToast";
 import { translateErrorMessage } from "../../../config/constants";
 import { formatDateDisplay } from "../../../utils/dateFormatter";
@@ -1383,7 +1382,7 @@ function InputWorkDay() {
                     title="Thêm mục tạm ứng"
                     disabled={isFutureDate(selectedYear, selectedMonth)}
                   >
-                    <i className="fa-solid fa-plus"></i>
+                    <FaPlus />
                   </button>
                 </div>
                 {(() => {
@@ -1511,7 +1510,7 @@ function InputWorkDay() {
                                   selectedMonth,
                                 )}
                               >
-                                <i className="fa-solid fa-trash"></i>
+                                <FaTrash />
                               </button>
                             )}
                           </div>
@@ -1571,7 +1570,7 @@ function InputWorkDay() {
                   className="calendar-header-btn"
                   onClick={() => setShowCalendarModal(true)}
                 >
-                  <FontAwesomeIcon icon={faCalendarDays} /> Nhập/Chỉnh sửa ngày
+                  <FaCalendarAlt /> Nhập/Chỉnh sửa ngày
                   công
                 </button>
               </div>
@@ -1710,7 +1709,7 @@ function InputWorkDay() {
                 ←
               </button>
               <span className="calendar-title">
-                <FontAwesomeIcon icon={faCalendarDays} /> Chọn ngày công
+                <FaCalendarAlt /> Chọn ngày công
               </span>
               <button
                 className="calendar-nav-btn"

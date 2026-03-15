@@ -14,6 +14,7 @@ import {
   ChevronDownIcon,
   MenuIcon,
 } from "../../../utils/Icons";
+import { FaUser } from "react-icons/fa";
 
 function Topbar({
   user,
@@ -98,7 +99,7 @@ function Topbar({
                     setShowUserMenu(false);
                   }}
                 >
-                  <i className="fa-solid fa-user"></i>
+                  <FaUser />
                   <span>Thông tin cá nhân</span>
                 </button>
                 <button

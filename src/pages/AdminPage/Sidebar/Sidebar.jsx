@@ -10,6 +10,7 @@ import {
 } from '../../../config/PermissionHelper';
 import { USER_ROLES } from '../../../config/constants';
 import { StatisticsIcon, UsersIcon, DocumentIcon, ClipboardListIcon } from '../../../utils/Icons';
+import { FaBars, FaChevronDown } from 'react-icons/fa';
 import './Sidebar.css';
 
 function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
@@ -107,7 +108,7 @@ function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header" onClick={onClose}>
           <div className="sidebar-logo">
-            <span className="logo-icon"><i className="fa-solid fa-bars"></i></span>
+            <span className="logo-icon"><FaBars /></span>
             <span className="logo-text">Habitas</span>
           </div>
           <button
@@ -136,7 +137,7 @@ function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
                   </div>
                   {item.hasDropdown && (
                     <span className={`dropdown-arrow ${expandedDropdowns[item.id] ? 'open' : ''}`}>
-                      <i className="fa-solid fa-chevron-down"></i>
+                      <FaChevronDown />
                     </span>
                   )}
                 </button>

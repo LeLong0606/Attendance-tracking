@@ -2,6 +2,22 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from '../../../hooks/useToast';
 import { userAPI } from '../../../services/api';
 import { translateErrorMessage } from '../../../config/constants';
+import {
+  FaPlus,
+  FaFilter,
+  FaCheckCircle,
+  FaBan,
+  FaRedo,
+  FaSpinner,
+  FaUsers,
+  FaEye,
+  FaLock,
+  FaLockOpen,
+  FaStepBackward,
+  FaChevronLeft,
+  FaChevronRight,
+  FaStepForward,
+} from 'react-icons/fa';
 import './ManageProfile.css';
 
 function UserList({ onPageChange }) {
@@ -361,7 +377,7 @@ function UserList({ onPageChange }) {
             title="Thêm người dùng mới"
             onClick={() => onPageChange('manage')}
           >
-            <i className="fa-solid fa-plus"></i>
+            <FaPlus />
           </button>
         </div>
         <div className="user-list-controls">
@@ -378,7 +394,7 @@ function UserList({ onPageChange }) {
               onClick={() => setShowFilterMenu(!showFilterMenu)}
               title="Lọc theo trạng thái"
             >
-              <i className="fa-solid fa-filter"></i>
+              <FaFilter />
             </button>
             {showFilterMenu && (
               <div className="filter-menu-dropdown">
@@ -390,7 +406,7 @@ function UserList({ onPageChange }) {
                     className="checkbox-input"
                   />
                   <span className="checkbox-text">
-                    <i className="fa-solid fa-check-circle"></i> Hoạt động
+                    <FaCheckCircle /> Hoạt động
                   </span>
                 </label>
                 <label className="filter-menu-item">
@@ -401,25 +417,25 @@ function UserList({ onPageChange }) {
                     className="checkbox-input"
                   />
                   <span className="checkbox-text">
-                    <i className="fa-solid fa-ban"></i> Vô hiệu hóa
+                    <FaBan /> Vô hiệu hóa
                   </span>
                 </label>
               </div>
             )}
           </div>
           <button className="refresh-button" onClick={fetchUsers}>
-            <i className="fa-solid fa-rotate-right"></i> Làm mới
+            <FaRedo /> Làm mới
           </button>
         </div>
       </div>
 
       {loading ? (
         <div className="loading-spinner">
-          <i className="fa-solid fa-spinner fa-spin"></i> Đang tải...
+          <FaSpinner className="spin-icon" /> Đang tải...
         </div>
       ) : users.length === 0 ? (
         <div className="empty-state">
-          <i className="fa-solid fa-users"></i>
+          <FaUsers />
           <p>Không có người dùng hoạt động nào</p>
         </div>
       ) : (
@@ -455,7 +471,7 @@ function UserList({ onPageChange }) {
                         title="Xem"
                         onClick={() => handleEditUser(user)}
                       >
-                        <i className="fa-solid fa-eye"></i>
+                        <FaEye />
                       </button>
                       <button
                         className={`btn-lock ${
@@ -465,7 +481,7 @@ function UserList({ onPageChange }) {
                         onClick={() => handleLockToggle(user.id)}
                         disabled={isDeactivating}
                       >
-                        <i className={`fa-solid ${!user.isActive ? 'fa-lock-open' : 'fa-lock'}`}></i>
+                        {!user.isActive ? <FaLockOpen /> : <FaLock />}
                       </button>
                     </div>
                   </td>
@@ -501,7 +517,7 @@ function UserList({ onPageChange }) {
                 disabled={currentPage === 1}
                 title="Trang đầu"
               >
-                <i className="fa-solid fa-step-backward"></i>
+                <FaStepBackward />
               </button>
               <button
                 className="pagination-button"
@@ -509,7 +525,7 @@ function UserList({ onPageChange }) {
                 disabled={currentPage === 1}
                 title="Trang trước"
               >
-                <i className="fa-solid fa-chevron-left"></i> 
+                <FaChevronLeft /> 
               </button>
               <div className="pagination-info-center">
                 <span>Trang <strong>{currentPage}</strong> / {totalPages}</span>
@@ -520,7 +536,7 @@ function UserList({ onPageChange }) {
                 disabled={currentPage === totalPages}
                 title="Trang sau"
               >
-                <i className="fa-solid fa-chevron-right"></i>
+                <FaChevronRight />
               </button>
               <button
                 className="pagination-button"
@@ -528,7 +544,7 @@ function UserList({ onPageChange }) {
                 disabled={currentPage === totalPages}
                 title="Trang cuối"
               >
-                <i className="fa-solid fa-step-forward"></i>
+                <FaStepForward />
               </button>
             </div>
           )}

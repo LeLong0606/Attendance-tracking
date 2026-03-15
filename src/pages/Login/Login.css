@@ -148,6 +148,11 @@ input[type="submit"]:hover {
   color: #1e5a96;
 }
 
+.toggle-password svg {
+  width: 18px;
+  height: 18px;
+}
+
 .txt_field label.hidden-animation {
   animation: hideLabel 0.3s ease-in forwards;
 }

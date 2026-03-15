@@ -1,6 +1,5 @@
 import { useContext } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faXmarkCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { FaCheckCircle, FaTimesCircle, FaExclamationTriangle } from 'react-icons/fa';
 import { ToastContext } from '../contexts/ToastContext';
 import './ToastContainer.css';
 
@@ -16,13 +15,13 @@ function ToastContainer() {
   const getIcon = (type) => {
     switch (type) {
       case 'success':
-        return faCheckCircle;
+        return FaCheckCircle;
       case 'error':
-        return faXmarkCircle;
+        return FaTimesCircle;
       case 'warning':
-        return faExclamationTriangle;
+        return FaExclamationTriangle;
       default:
-        return faCheckCircle;
+        return FaCheckCircle;
     }
   };
 
@@ -31,10 +30,10 @@ function ToastContainer() {
       {toasts.map((toast) => (
         <div key={toast.id} className={`toast toast-${toast.type}`}>
           <div className="toast-content">
-            <FontAwesomeIcon 
-              icon={getIcon(toast.type)} 
-              className={`toast-icon toast-icon-${toast.type}`}
-            />
+            {(() => {
+              const Icon = getIcon(toast.type);
+              return <Icon className={`toast-icon toast-icon-${toast.type}`} />;
+            })()}
             <span className="toast-message">{toast.message}</span>
           </div>
           <div className="toast-border"></div>
