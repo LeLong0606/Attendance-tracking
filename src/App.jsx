@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import Login from './pages/Login/Login';
 import ChangePassword from './pages/ChangePassword/InitChangePassword';
@@ -101,6 +101,7 @@ function AppContent() {
         <Route path={ROUTES.CHANGE_PASSWORD} element={<ChangePassword />} />
         <Route path={ROUTES.MAIN} element={<Main />} />
         <Route path={ROUTES.ERROR} element={<ErrorPage />} />
+        <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
       </Routes>
     </ErrorBoundary>
   );
