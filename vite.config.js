@@ -3,8 +3,10 @@ import react from '@vitejs/plugin-react'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: './',
+export default defineConfig(({ mode }) => ({
+  // Use absolute base path in production so /workdaymanagement/ui works
+  // even when URL is opened without trailing slash.
+  base: mode === 'production' ? '/workdaymanagement/ui/' : '/',
   plugins: [react(), basicSsl()],
   server: {
     https: true,
@@ -19,4 +21,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

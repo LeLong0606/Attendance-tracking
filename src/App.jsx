@@ -108,9 +108,11 @@ function AppContent() {
 }
 
 function App() {
+  const routerBaseName = import.meta.env.BASE_URL.replace(/\/$/, '');
+
   return (
     <ToastProvider>
-      <Router>
+      <Router basename={routerBaseName}>
         <AppContent />
         <ToastContainer />
       </Router>
