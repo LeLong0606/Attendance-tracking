@@ -2,7 +2,7 @@ name: Deploy Attendance Tracking UI
 
 on:
   push:
-    branches: [ "master" ] # Nhớ check lại xem nhánh chính là master hay main nhé
+    branches: [ "main" ] # Nhớ check lại xem nhánh chính là master hay main nhé
 
 jobs:
   deploy:
