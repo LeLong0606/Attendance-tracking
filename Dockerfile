@@ -1,15 +1,14 @@
 # ==========================================
-# STAGE 1: Dùng Node.js để cài thư viện và Build
+# STAGE 1: Dùng Node.js để cài thư viện và Build (Cho Attendance Tracking)
 # ==========================================
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Copy file cấu hình và cài đặt thư viện trước (Tận dụng cache của Docker cho nhanh)
 COPY package*.json ./
 RUN npm install
 
-# Copy toàn bộ source code và chạy lệnh build của Vite (Vite sẽ tạo ra thư mục 'dist')
 COPY . .
+# Lưu ý: Vite mặc định build ra thư mục 'dist'
 RUN npm run build
 
 # ==========================================
@@ -17,12 +16,14 @@ RUN npm run build
 # ==========================================
 FROM nginx:alpine
 
-# Copy toàn bộ file tĩnh đã build từ Stage 1 sang thư mục gốc của Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# [QUAN TRỌNG]: Cấu hình Nginx để hỗ trợ React Router (Fix lỗi 404 khi bấm F5 ở trang con)
+# [QUAN TRỌNG]: Cấu hình Nginx HTTPS với chứng chỉ xịn của Tailscale
 RUN echo "server { \
     listen 80; \
+    listen 443 ssl; \
+    ssl_certificate /https/desktop-8l98oc0.tail542363.ts.net.crt; \
+    ssl_certificate_key /https/desktop-8l98oc0.tail542363.ts.net.key; \
     location / { \
         root /usr/share/nginx/html; \
         index index.html index.htm; \
@@ -30,6 +31,5 @@ RUN echo "server { \
     } \
 }" > /etc/nginx/conf.d/default.conf
 
-# Nginx mặc định chạy ở cổng 80 bên trong container
-EXPOSE 80
+EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]

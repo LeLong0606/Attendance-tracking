@@ -1,13 +1,12 @@
-name: Deploy React Vite FE
+name: Deploy Attendance Tracking UI
 
 on:
   push:
-    # LƯU Ý: Nếu nhánh chính của repo FE là 'main' thì đổi chữ 'master' thành 'main' nhé bro
-    branches: [ "main" ]
+    branches: [ "master" ] # Nhớ check lại xem nhánh chính là master hay main nhé
 
 jobs:
   deploy:
-    name: Build and Deploy FE
+    name: Build and Deploy Attendance FE
     runs-on: self-hosted
 
     steps:
@@ -17,33 +16,35 @@ jobs:
       - name: 2. Cleanup Old Environment
         shell: cmd
         run: |
-          echo "[INFO] Dang dung va xoa Container FE cu..."
-          docker rm -f attendance-tracking || echo "[INFO] Khong co container cu."
+          echo "[INFO] Dang dung va xoa Container Attendance FE cu..."
+          docker rm -f attendance-fe-running || echo "[INFO] Khong co container cu."
 
-          echo "[INFO] Dang xoa Image FE cu..."
-          docker rmi -f attendance-tracking || echo "[INFO] Khong co image cu."
+          echo "[INFO] Dang xoa Image Attendance FE cu..."
+          docker rmi -f attendance-fe || echo "[INFO] Khong co image cu."
 
       - name: 3. Build Docker Image (No Cache)
         shell: cmd
         run: |
-          echo "[INFO] Bat dau build React app..."
-          docker build --no-cache -t attendance-tracking .
+          echo "[INFO] Bat dau build React app Attendance..."
+          docker build --no-cache -t attendance-fe .
 
       - name: 4. Run New Container
         shell: cmd
         run: |
-          echo "[INFO] Khoi dong giao dien FE..."
+          echo "[INFO] Khoi dong giao dien Attendance FE..."
           
           REM ==========================================================
-          REM GIAI THICH CAU HINH
-          REM -d: Chay ngam
-          REM -p 3000:80 : Map cong 3000 tu Laptop vao cong 80 cua Nginx
+          REM -v C:\dockercert... : Dung chung chung chi SSL Tailscale
+          REM -p 6000:80 : Cong HTTP tran cho Attendance (http://...)
+          REM -p 6001:443 : Cong HTTPS an toan cho Attendance (https://...:6001)
           REM ==========================================================
           
           docker run -d --restart unless-stopped ^
-            --name attendance-tracking-running ^
-            -p 3000:80 ^
-            attendance-tracking
+            --name attendance-fe-running ^
+            -v "C:\dockercert:/https:ro" ^
+            -p 6000:80 ^
+            -p 6001:443 ^
+            attendance-fe
 
       - name: 5. System Cleanup
         shell: cmd
