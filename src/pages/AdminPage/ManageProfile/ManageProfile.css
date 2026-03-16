@@ -1445,6 +1445,7 @@ button {
 @media (max-width: 640px) {
   .user-list-container {
     padding: 1rem 0.5rem;
+    overflow-x: hidden;
   }
 
   .user-list-title {
@@ -1480,11 +1481,16 @@ button {
 
   /* Card layout — replace table */
   .user-list-wrapper {
-    overflow-x: unset;
+    overflow-x: hidden;
     background: transparent;
     box-shadow: none;
     border-radius: 0;
     max-height: unset;
+  }
+
+  .user-list-table {
+    min-width: 0 !important;
+    width: 100% !important;
   }
 
   .user-list-table,
@@ -1527,6 +1533,9 @@ button {
     font-size: 0.875rem;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .user-row td::before {
@@ -1584,20 +1593,45 @@ button {
   /* Edit modal */
   .edit-user-modal {
     width: 96vw !important;
+    max-width: 96vw !important;
     max-height: 90vh;
     overflow-y: auto;
+    overflow-x: hidden;
     border-radius: 10px;
     padding: 1.25rem !important;
+    box-sizing: border-box;
   }
 
   .edit-user-form {
     grid-template-columns: 1fr;
     gap: 1rem;
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .edit-user-form .form-group,
+  .edit-user-form .form-input,
+  .edit-user-form select {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .modal-buttons {
+    display: flex;
+    flex-wrap: wrap;
     padding-top: 1rem;
     gap: 0.75rem;
+    width: 100%;
+  }
+
+  .modal-buttons .cancel-button,
+  .modal-buttons .confirm-button {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
   }
 
   .modal-header {
