@@ -1,4 +1,4 @@
-import { API_BASE_URL, STORAGE_TOKEN } from './constants';
+import { API_BASE_URL, STORAGE_TOKEN, getLoginRedirectUrl } from './constants';
 import { clearAuthStorage } from './TokenHelper';
 
 /**
@@ -37,7 +37,7 @@ export const apiClient = async (url, options = {}) => {
         // Set flag để hiện toast SAU KHI redirect
         sessionStorage.setItem('auth-expired-toast', '1');
         clearAuthStorage();
-        window.location.href = '/';
+        window.location.href = getLoginRedirectUrl();
       }
       throw new Error(`Unauthorized - Status ${response.status}`);
     }

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../presentation/hooks/useAuth';
 import { useToast } from '../../../hooks/useToast';
 import { getTempToken } from '../../../config/TokenHelper';
-import { translateErrorMessage } from '../../../config/constants';
+import { translateErrorMessage, getLoginRedirectUrl } from '../../../config/constants';
 import { FaEye } from 'react-icons/fa';
 
 const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, placeholder }) => (
@@ -100,7 +100,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
         if (!result?.hasAccessToken) {
           sessionStorage.setItem('skip-auth-expired-toast', '1');
           setTimeout(() => {
-            window.location.href = '/';
+            window.location.href = getLoginRedirectUrl();
           }, 1500);
           return;
         }

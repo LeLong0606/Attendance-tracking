@@ -3,7 +3,7 @@
  * Xử lý all API calls liên quan đến authentication - Layer Data
  */
 import axios from 'axios';
-import { API_BASE_URL, STORAGE_TOKEN, API_ENDPOINTS } from '../../config/constants';
+import { API_BASE_URL, STORAGE_TOKEN, API_ENDPOINTS, getLoginRedirectUrl } from '../../config/constants';
 import { clearAuthStorage } from '../../config/TokenHelper';
 
 /**
@@ -63,7 +63,7 @@ authAxios.interceptors.response.use(
       // Set flag để hiện toast SAU KHI redirect
       sessionStorage.setItem('auth-expired-toast', '1');
       clearAuthStorage();
-      window.location.href = '/';
+      window.location.href = getLoginRedirectUrl();
     }
     throw error;
   }

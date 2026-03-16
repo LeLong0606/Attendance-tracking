@@ -3,6 +3,7 @@ import { useAuth } from "../../../presentation/hooks/useAuth";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { useToast } from "../../../hooks/useToast";
 import { translateErrorMessage } from "../../../utils/errorHandler";
+import { getLoginRedirectUrl } from "../../../config/constants";
 import AvatarUploadModal from "../Topbar/AvatarUploadModal";
 import { FaUser, FaCamera, FaRegCalendarAlt } from "react-icons/fa";
 import "./PersonalInfo.css";
@@ -177,7 +178,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
         // Token invalid/expired - redirect ngay, toast hiện sau
         sessionStorage.setItem('auth-expired-toast', '1');
         localStorage.clear();
-        window.location.href = '/';
+        window.location.href = getLoginRedirectUrl();
         return;
       }
 
@@ -244,7 +245,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
           // Token invalid/expired - redirect ngay, toast hiện sau
           sessionStorage.setItem('auth-expired-toast', '1');
           localStorage.clear();
-          window.location.href = '/';
+          window.location.href = getLoginRedirectUrl();
           return;
         }
 
@@ -279,7 +280,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
         if (error.message && (error.message.includes('token') || error.message.includes('unauthorized') || error.message.includes('redirecting'))) {
           sessionStorage.setItem('auth-expired-toast', '1');
           localStorage.clear();
-          window.location.href = '/';
+          window.location.href = getLoginRedirectUrl();
         }
       }
     };

@@ -9,6 +9,8 @@
 export const Domain = 'https://desktop-8l98oc0.tail542363.ts.net/workdaymanagement';
 export const API_PREFIX = '/api';
 export const API_BASE_URL = `${Domain}${API_PREFIX}`;
+export const UI_BASE_PATH = '/workdaymanagement/ui/';
+export const getLoginRedirectUrl = () => `${window.location.origin}${UI_BASE_PATH}`;
 
 
 

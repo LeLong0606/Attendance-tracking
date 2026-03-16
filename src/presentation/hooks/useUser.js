@@ -7,6 +7,7 @@ import { UserRepository } from '../../data/repositories/UserRepository';
 import { GetProfileUseCase } from '../../domain/usecases/GetProfileUseCase';
 import { UpdateProfileUseCase } from '../../domain/usecases/UpdateProfileUseCase';
 import { getUserFromToken } from '../../config/TokenHelper';
+import { getLoginRedirectUrl } from '../../config/constants';
 
 export const useUser = () => {
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ export const useUser = () => {
       if (!user) {
     
         localStorage.clear();
-        window.location.href = '/';
+        window.location.href = getLoginRedirectUrl();
         throw new Error('Token invalid - redirecting to login');
       }
 

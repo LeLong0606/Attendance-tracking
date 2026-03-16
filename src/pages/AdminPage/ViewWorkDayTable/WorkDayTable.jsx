@@ -6,6 +6,7 @@ import { useUser } from "../../../presentation/hooks/useUser";
 import { useToast } from "../../../hooks/useToast";
 import { userAPI, payrollAPI } from "../../../services/api";
 import { USER_ROLES } from "../../../config/constants";
+import { getLoginRedirectUrl } from "../../../config/constants";
 import { 
   getUserRole,
   isAdmin,
@@ -94,7 +95,7 @@ function WorkDayTable() {
           // Token invalid/expired - redirect ngay, toast hiện sau
           sessionStorage.setItem('auth-expired-toast', '1');
           localStorage.clear();
-          window.location.href = '/';
+          window.location.href = getLoginRedirectUrl();
           return;
         }
         

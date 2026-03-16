@@ -4,7 +4,7 @@ import { useAuth } from '../../presentation/hooks/useAuth';
 import { useUser } from '../../presentation/hooks/useUser';
 import { useToast } from '../../hooks/useToast';
 import { getUserFromToken } from '../../config/TokenHelper';
-import { STORAGE_TOKEN, STORAGE_USER, STORAGE_REFRESH_TOKEN } from '../../config/constants';
+import { STORAGE_TOKEN, STORAGE_USER, STORAGE_REFRESH_TOKEN, getLoginRedirectUrl } from '../../config/constants';
 import PersonalInfo from './PersonalInfor/PersonalInfo';
 import StatisticsPage from './StatisticsPage/StatisticsPage';
 import CreateUser from './ManageProfile/CreateUser';
@@ -33,7 +33,7 @@ function Main() {
     setIsTokenValid(false);
     sessionStorage.setItem('auth-expired-toast', '1');
     localStorage.clear();
-    window.location.href = '/';
+    window.location.href = getLoginRedirectUrl();
   };
 
   const isTokenRelatedError = (err) => {

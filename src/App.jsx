@@ -8,7 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './contexts/ToastContext';
 import ToastContainer from './components/ToastContainer';
 import { useToast } from './hooks/useToast';
-import { ROUTES, STORAGE_TOKEN } from './config/constants';
+import { ROUTES, STORAGE_TOKEN, getLoginRedirectUrl } from './config/constants';
 import './App.css';
 
 function AppContent() {
@@ -73,7 +73,7 @@ function AppContent() {
       const channel = new BroadcastChannel('auth-channel');
       channel.onmessage = (event) => {
         if (event.data.type === 'TOKEN_EXPIRED') {
-          window.location.href = '/';
+          window.location.href = getLoginRedirectUrl();
         }
       };
       return () => channel.close();
@@ -86,7 +86,7 @@ function AppContent() {
     const handleStorageChange = (e) => {
       if ((e.key === STORAGE_TOKEN && e.newValue === null) || 
           (e.key === 'logout-event' && e.newValue !== null)) {
-        window.location.href = '/';
+        window.location.href = getLoginRedirectUrl();
       }
     };
     window.addEventListener('storage', handleStorageChange);
