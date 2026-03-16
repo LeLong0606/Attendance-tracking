@@ -28,6 +28,10 @@ RUN echo "server { \
         root /usr/share/nginx/html; \
         index index.html index.htm; \
         try_files \$uri \$uri/ /index.html; \
+        return 302 /management/ui/; \
+    } \
+      location / { \
+        return 302 /management/ui/; \
     } \
 }" > /etc/nginx/conf.d/default.conf
 
