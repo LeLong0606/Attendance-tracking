@@ -17,6 +17,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaStepForward,
+  FaRegCalendarAlt,
 } from "react-icons/fa";
 import "./ManageProfile.css";
 
@@ -42,6 +43,7 @@ function UserList({ onPageChange }) {
   const { showToast } = useToast();
   const tableWrapperRef = useRef(null);
   const filterMenuRef = useRef(null);
+  const hiddenDobPickerRef = useRef(null);
 
   // Lấy danh sách người dùng từ API
   useEffect(() => {
@@ -318,6 +320,30 @@ function UserList({ onPageChange }) {
       ...prev,
       [field]: value,
     }));
+  };
+
+  const formatDobForDateInput = (dobValue) => {
+    if (!dobValue || !/^\d{2}-\d{2}-\d{4}$/.test(dobValue)) return "";
+    const [day, month, year] = dobValue.split("-");
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatDateInputToDob = (dateValue) => {
+    if (!dateValue || !/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) return "";
+    const [year, month, day] = dateValue.split("-");
+    return `${day}-${month}-${year}`;
+  };
+
+  const handleOpenDobCalendar = () => {
+    if (!isEditingMode || !hiddenDobPickerRef.current) return;
+
+    if (typeof hiddenDobPickerRef.current.showPicker === "function") {
+      hiddenDobPickerRef.current.showPicker();
+      return;
+    }
+
+    hiddenDobPickerRef.current.focus();
+    hiddenDobPickerRef.current.click();
   };
 
   const handleSaveEdit = async () => {
@@ -690,24 +716,50 @@ function UserList({ onPageChange }) {
 
               <div className="form-group">
                 <label>Ngày sinh</label>
-                <input
-                  type="text"
-                  value={
-                    isEditingMode
-                      ? editingUser.dateOfBirth || ""
-                      : editingUser.dateOfBirth || "Chưa có dữ liệu"
-                  }
-                  onChange={
-                    isEditingMode
-                      ? (e) =>
-                          handleEditInputChange("dateOfBirth", e.target.value)
-                      : undefined
-                  }
-                  className="form-input"
-                  placeholder={isEditingMode ? "dd-mm-yyyy" : ""}
-                  readOnly={!isEditingMode}
-                  disabled={!isEditingMode}
-                />
+                <div className="input-wrapper">
+                  <input
+                    type="text"
+                    value={
+                      isEditingMode
+                        ? editingUser.dateOfBirth || ""
+                        : editingUser.dateOfBirth || "Chưa có dữ liệu"
+                    }
+                    onChange={
+                      isEditingMode
+                        ? (e) =>
+                            handleEditInputChange("dateOfBirth", e.target.value)
+                        : undefined
+                    }
+                    className="form-input"
+                    placeholder={isEditingMode ? "dd-mm-yyyy" : ""}
+                    readOnly={!isEditingMode}
+                    disabled={!isEditingMode}
+                  />
+                  <button
+                    type="button"
+                    className="input-icon-button"
+                    onClick={handleOpenDobCalendar}
+                    disabled={!isEditingMode}
+                    aria-label="Chọn ngày sinh từ lịch"
+                    title="Chọn ngày sinh"
+                  >
+                    <FaRegCalendarAlt />
+                  </button>
+                  <input
+                    ref={hiddenDobPickerRef}
+                    type="date"
+                    className="hidden-date-picker-input"
+                    value={formatDobForDateInput(editingUser.dateOfBirth || "")}
+                    onChange={(e) =>
+                      handleEditInputChange(
+                        "dateOfBirth",
+                        formatDateInputToDob(e.target.value),
+                      )
+                    }
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  />
+                </div>
               </div>
 
               <div className="form-group">

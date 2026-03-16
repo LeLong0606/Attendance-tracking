@@ -1196,6 +1196,62 @@ button {
   background-color: #f8f9ff;
 }
 
+.edit-user-form .input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.edit-user-form .input-wrapper .form-input {
+  width: 100% !important;
+  max-width: none;
+  padding-right: 2.75rem;
+}
+
+.edit-user-form .input-icon-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #667eea;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.edit-user-form .input-icon-button:hover {
+  color: #5568d3;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 4px;
+}
+
+.edit-user-form .input-icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.edit-user-form .input-icon-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.edit-user-form .hidden-date-picker-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+}
+
 /* ========== Responsive Design for Create User Form ========== */
 @media (max-width: 1024px) {
   .manage-profile-container {
