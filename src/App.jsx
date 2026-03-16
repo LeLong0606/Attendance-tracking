@@ -56,11 +56,11 @@ function AppContent() {
       const shouldSkipExpiredToast = sessionStorage.getItem('skip-auth-expired-toast') === '1';
       if (shouldSkipExpiredToast) {
         sessionStorage.removeItem('skip-auth-expired-toast');
-        navigate(ROUTES.LOGIN);
+        window.location.href = getLoginRedirectUrl();
         return;
       }
       toast.showToast('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại', 'warning');
-      navigate(ROUTES.LOGIN);
+      window.location.href = getLoginRedirectUrl();
     }
   }, [location.pathname, navigate]);
 
