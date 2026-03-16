@@ -23,7 +23,8 @@ const PasswordInputWithToggle = ({ value, onChange, showPassword, onToggle, plac
         border: "1.5px solid #dbdfe6",
         borderRadius: "6px",
         transition: "all 0.2s ease",
-        boxSizing: "border-box"
+        boxSizing: "border-box",
+        color: "#667eea"
       }}
     />
     <button

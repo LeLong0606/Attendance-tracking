@@ -33,6 +33,7 @@ body {
   border-bottom: 1px solid silver;
  caret-color: #000;
   cursor: pointer;
+  color : #000000;
 }
 
 .center form {
@@ -55,6 +56,7 @@ form .txt_field {
   background: none;
   outline: none;
   caret-color: #000;
+  color: #000000;
 }
 
 .txt_field label {

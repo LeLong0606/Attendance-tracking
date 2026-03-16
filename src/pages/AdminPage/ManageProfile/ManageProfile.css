@@ -922,6 +922,7 @@ button {
 
 .user-row {
   transition: all 0.2s ease;
+  color: #000000;
 }
 
 .user-row:hover {
