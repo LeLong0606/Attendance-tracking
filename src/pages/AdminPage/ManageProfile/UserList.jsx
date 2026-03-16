@@ -615,8 +615,8 @@ function UserList({ onPageChange }) {
                 <label>Email</label>
                 <input
                   type="email"
-                  value={editingUser.email}
-                  onChange={(e) => handleEditInputChange('email', e.target.value)}
+                   value={isEditingMode ? (editingUser.email || '') : (editingUser.email || 'Chưa có dữ liệu')}
+                  onChange={isEditingMode ? (e) => handleEditInputChange('email', e.target.value) : undefined}
                   className="form-input"
                   readOnly={!isEditingMode}
                 />
@@ -626,10 +626,10 @@ function UserList({ onPageChange }) {
                 <label>Số điện thoại</label>
                 <input
                   type="tel"
-                  value={editingUser.phone || ''}
-                  onChange={(e) => handleEditInputChange('phone', e.target.value)}
+                  value={isEditingMode ? (editingUser.phone || '') : (editingUser.phone || 'Chưa có dữ liệu')}
+                  onChange={isEditingMode ? (e) => handleEditInputChange('phone', e.target.value) : undefined}
                   className="form-input"
-                  placeholder="Nhập số điện thoại"
+                  placeholder={isEditingMode ? 'Nhập số điện thoại' : ''}
                   readOnly={!isEditingMode}
                 />
               </div>
@@ -637,11 +637,13 @@ function UserList({ onPageChange }) {
               <div className="form-group">
                 <label>Ngày sinh</label>
                 <input
-                  type="date"
-                  value={editingUser.dateOfBirth || ''}
-                  onChange={(e) => handleEditInputChange('dateOfBirth', e.target.value)}
+                  type={isEditingMode ? 'date' : 'text'}
+                  value={isEditingMode ? (editingUser.dateOfBirth || '') : (editingUser.dateOfBirth || 'Chưa có dữ liệu')}
+                  onChange={isEditingMode ? (e) => handleEditInputChange('dateOfBirth', e.target.value) : undefined}
                   className="form-input"
+                  placeholder={isEditingMode ? 'Nhập ngày sinh' : ''}
                   readOnly={!isEditingMode}
+                  disabled={!isEditingMode}
                 />
               </div>
 
