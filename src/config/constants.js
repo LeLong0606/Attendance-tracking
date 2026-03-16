@@ -3,14 +3,17 @@
  * Chứa các giá trị cấu hình dự án
  */
 
-// API Configuration
- //const API_BASE_URL = '/api';
 // Sẽ được proxy qua Vite dev server đến: 
 export const Domain = 'https://desktop-8l98oc0.tail542363.ts.net/workdaymanagement';
 export const API_PREFIX = '/api';
+
+// API Configuration
+ //const API_BASE_URL = '/api';
 export const API_BASE_URL = `${Domain}${API_PREFIX}`;
-export const UI_BASE_PATH = '/workdaymanagement/ui/';
-export const getLoginRedirectUrl = () => `${window.location.origin}${UI_BASE_PATH}`;
+
+//export const UI_BASE_PATH = '/workdaymanagement/ui/';
+export const LOGIN_REDIRECT_URL = 'https://desktop-8l98oc0.tail542363.ts.net/workdaymanagement/ui/';
+export const getLoginRedirectUrl = () => LOGIN_REDIRECT_URL;
 
 
 
