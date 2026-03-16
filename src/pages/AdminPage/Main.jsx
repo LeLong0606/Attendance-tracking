@@ -4,7 +4,7 @@ import { useAuth } from '../../presentation/hooks/useAuth';
 import { useUser } from '../../presentation/hooks/useUser';
 import { useToast } from '../../hooks/useToast';
 import { getUserFromToken } from '../../config/TokenHelper';
-import { STORAGE_TOKEN, STORAGE_USER, STORAGE_REFRESH_TOKEN, getLoginRedirectUrl } from '../../config/constants';
+import { STORAGE_TOKEN, STORAGE_USER, STORAGE_REFRESH_TOKEN, getLoginRedirectUrl, resolveWorkdayAssetUrl } from '../../config/constants';
 import PersonalInfo from './PersonalInfor/PersonalInfo';
 import StatisticsPage from './StatisticsPage/StatisticsPage';
 import CreateUser from './ManageProfile/CreateUser';
@@ -123,7 +123,7 @@ function Main() {
           
           // Set avatar if available
           if (profileData.avatarUrl) {
-            setAvatar(profileData.avatarUrl);
+            setAvatar(resolveWorkdayAssetUrl(profileData.avatarUrl));
           }
           
           // Token valid - cho phép render UI
@@ -200,7 +200,7 @@ function Main() {
   const handleAvatarChange = (data) => {
     // Handle URL string from AvatarUploadModal
     if (typeof data === 'string') {
-      setAvatar(data);
+      setAvatar(resolveWorkdayAssetUrl(data));
       return;
     }
 
@@ -224,7 +224,7 @@ function Main() {
         fullName: profileData.fullName || profileData.full_name || prev.username
       }));
       if (profileData.avatarUrl) {
-        setAvatar(profileData.avatarUrl);
+        setAvatar(resolveWorkdayAssetUrl(profileData.avatarUrl));
       }
     } catch (err) {
     }

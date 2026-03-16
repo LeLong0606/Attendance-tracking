@@ -4,6 +4,7 @@ import {
   STORAGE_USER,
   STORAGE_TOKEN,
   STORAGE_REFRESH_TOKEN,
+  resolveWorkdayAssetUrl,
 } from "../../../config/constants";
 import "./Topbar.css";
 import { useState } from "react";
@@ -77,7 +78,7 @@ function Topbar({
             >
               <div className="avatar-frame">
                 {avatar ? (
-                  <img src={avatar} alt="Avatar" className="avatar-img" />
+                  <img src={resolveWorkdayAssetUrl(avatar)} alt="Avatar" className="avatar-img" />
                 ) : (
                   <span className="avatar-initial">
                     {user?.fullName?.charAt(0).toUpperCase() || "U"}

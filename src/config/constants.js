@@ -15,6 +15,27 @@ export const API_BASE_URL = `${Domain}${API_PREFIX}`;
 export const LOGIN_REDIRECT_URL = 'https://desktop-8l98oc0.tail542363.ts.net/workdaymanagement/ui/';
 export const getLoginRedirectUrl = () => LOGIN_REDIRECT_URL;
 
+export const WORKDAY_BASE_PATH = '/workdaymanagement';
+
+export const resolveWorkdayAssetUrl = (url) => {
+  if (!url || typeof url !== 'string') return url;
+
+  const trimmedUrl = url.trim();
+  if (!trimmedUrl) return trimmedUrl;
+
+  // Nếu URL đã là absolute hoặc là data/blob URL, trả về nguyên bản
+  if (/^https?:\/\//i.test(trimmedUrl) || trimmedUrl.startsWith('data:') || trimmedUrl.startsWith('blob:')) {
+    return trimmedUrl;
+  }
+
+  const normalizedPath = trimmedUrl.startsWith('/') ? trimmedUrl : `/${trimmedUrl}`;
+  if (normalizedPath === WORKDAY_BASE_PATH || normalizedPath.startsWith(`${WORKDAY_BASE_PATH}/`)) {
+    return normalizedPath;
+  }
+
+  return `${WORKDAY_BASE_PATH}${normalizedPath}`;
+};
+
 
 
 

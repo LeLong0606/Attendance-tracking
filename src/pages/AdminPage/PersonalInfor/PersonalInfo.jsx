@@ -3,7 +3,7 @@ import { useAuth } from "../../../presentation/hooks/useAuth";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { useToast } from "../../../hooks/useToast";
 import { translateErrorMessage } from "../../../utils/errorHandler";
-import { getLoginRedirectUrl } from "../../../config/constants";
+import { getLoginRedirectUrl, resolveWorkdayAssetUrl } from "../../../config/constants";
 import AvatarUploadModal from "../Topbar/AvatarUploadModal";
 import { FaUser, FaCamera, FaRegCalendarAlt } from "react-icons/fa";
 import "./PersonalInfo.css";
@@ -338,7 +338,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
       <div className="avatar-section">
         <div className="avatar-display">
           {avatarUrl ? (
-            <img src={avatarUrl} alt="Avatar" className="avatar-image" />
+            <img src={resolveWorkdayAssetUrl(avatarUrl)} alt="Avatar" className="avatar-image" />
           ) : (
             <div className="avatar-placeholder">
               <FaUser />
@@ -511,7 +511,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
         isOpen={showAvatarModal}
         onClose={() => setShowAvatarModal(false)}
         onUpload={handleAvatarUpload}
-        currentAvatar={avatarUrl}
+        currentAvatar={resolveWorkdayAssetUrl(avatarUrl)}
       />
     </div>
   );
