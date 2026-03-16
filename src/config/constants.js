@@ -36,6 +36,27 @@ export const resolveWorkdayAssetUrl = (url) => {
   return `${WORKDAY_BASE_PATH}${normalizedPath}`;
 };
 
+export const resolveAbsoluteWorkdayAssetUrl = (url) => {
+  if (!url || typeof url !== 'string') return url;
+
+  const trimmedUrl = url.trim();
+  if (!trimmedUrl) return trimmedUrl;
+
+  if (/^https?:\/\//i.test(trimmedUrl) || trimmedUrl.startsWith('data:') || trimmedUrl.startsWith('blob:')) {
+    return trimmedUrl;
+  }
+
+  const normalizedPath = resolveWorkdayAssetUrl(trimmedUrl);
+
+  try {
+    const origin = new URL(LOGIN_REDIRECT_URL).origin;
+    return `${origin}${normalizedPath}`;
+  } catch (error) {
+    const fallbackOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    return `${fallbackOrigin}${normalizedPath}`;
+  }
+};
+
 
 
 

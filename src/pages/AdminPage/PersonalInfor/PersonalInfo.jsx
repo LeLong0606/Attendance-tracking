@@ -3,7 +3,7 @@ import { useAuth } from "../../../presentation/hooks/useAuth";
 import { useUser } from "../../../presentation/hooks/useUser";
 import { useToast } from "../../../hooks/useToast";
 import { translateErrorMessage } from "../../../utils/errorHandler";
-import { getLoginRedirectUrl, resolveWorkdayAssetUrl } from "../../../config/constants";
+import { getLoginRedirectUrl, resolveWorkdayAssetUrl, resolveAbsoluteWorkdayAssetUrl } from "../../../config/constants";
 import AvatarUploadModal from "../Topbar/AvatarUploadModal";
 import { FaUser, FaCamera, FaRegCalendarAlt } from "react-icons/fa";
 import "./PersonalInfo.css";
@@ -191,7 +191,7 @@ function PersonalInfo({ onAvatarChange, onProfileUpdate }) {
         fullName: fullName,
         email: email,
         phoneNumber: phoneNumber || null,
-        avatarUrl: avatarUrl || null,
+        avatarUrl: avatarUrl ? resolveAbsoluteWorkdayAssetUrl(avatarUrl) : null,
         gender: gender || null,
         dateOfBirth: formatDateForAPI(dateOfBirth)
       });
