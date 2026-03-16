@@ -1362,3 +1362,251 @@ button {
     font-size: 0.9rem;
   }
 }
+
+/* ========== Responsive Design for User List ========== */
+
+/* ---- Tablet (≤ 1024px) ---- */
+@media (max-width: 1024px) {
+  .user-list-container {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .user-list-wrapper {
+    overflow-x: auto;
+  }
+
+  .user-list-table {
+    min-width: 600px;
+  }
+
+  .user-list-title {
+    font-size: 1.2rem;
+  }
+
+  .user-list-table th {
+    font-size: 0.6rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .user-list-table td {
+    font-size: 0.6rem;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .status-badge {
+    font-size: 0.4rem;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .user-search-input {
+    font-size: 0.6rem;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .refresh-button {
+    font-size: 0.6rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .pagination-info,
+  .pagination-info-center {
+    font-size: 0.6rem;
+  }
+
+  .pagination-button {
+    font-size: 0.6rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .edit-user-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .edit-user-form .form-group label {
+    font-size: 0.6rem;
+  }
+
+  .edit-user-form .form-input {
+    font-size: 0.6rem;
+    height: 40px;
+  }
+
+  .modal-header {
+    font-size: 1.1rem;
+  }
+  .filter-menu-button {
+    width: 30px;
+    height: 30px;
+    padding: 0.65rem 0.5rem;
+  }
+}
+
+/* ---- Mobile (≤ 640px) ---- */
+@media (max-width: 640px) {
+  .user-list-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .user-list-title {
+    font-size: 1.25rem;
+  }
+
+  .user-list-header-title {
+    margin-bottom: 1rem;
+  }
+
+  .user-list-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .user-search-input {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .refresh-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filter-menu-container {
+    width: 100%;
+  }
+
+  .filter-menu-button {
+    width: 100%;
+  }
+
+  /* Card layout — replace table */
+  .user-list-wrapper {
+    overflow-x: unset;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    max-height: unset;
+  }
+
+  .user-list-table,
+  .user-list-table thead,
+  .user-list-table tbody,
+  .user-list-table th,
+  .user-list-table td,
+  .user-list-table tr {
+    display: block;
+  }
+
+  .user-list-table thead {
+    display: none;
+  }
+
+  .user-list-table tbody {
+    height: auto;
+    overflow-y: unset;
+  }
+
+  .user-row {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 0.875rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .user-row:hover {
+    background: #f8f9ff;
+  }
+
+  .user-row td {
+    border-bottom: none;
+    padding: 0.3rem 0.25rem;
+    font-size: 0.875rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-row td::before {
+    content: attr(data-label);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #667eea;
+    margin-bottom: 0.15rem;
+  }
+
+  .col-username {
+    width: 50% !important;
+  }
+
+  .col-fullname {
+    width: 50% !important;
+  }
+
+  .col-email {
+    width: 100% !important;
+  }
+
+  .col-status {
+    width: 50% !important;
+  }
+
+  .col-created {
+    width: 50% !important;
+    font-size: 0.75rem;
+  }
+
+  .col-actions {
+    width: 100% !important;
+    text-align: left;
+  }
+
+  .action-buttons {
+    justify-content: flex-start;
+  }
+
+  /* Footer */
+  .user-list-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Edit modal */
+  .edit-user-modal {
+    width: 96vw !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 1.25rem !important;
+  }
+
+  .edit-user-form {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .modal-buttons {
+    padding-top: 1rem;
+    gap: 0.75rem;
+  }
+
+  .modal-header {
+    font-size: 1.1rem;
+  }
+
+  .filter-menu-button {
+    width: 30px;
+    height: 30px;
+  }
+
+}

@@ -455,16 +455,16 @@ function UserList({ onPageChange }) {
             <tbody>
               {paginatedUsers.map((user) => (
                 <tr key={user.id} className="user-row">
-                  <td className="col-username">{user.username}</td>
-                  <td className="col-fullname">{user.fullName}</td>
-                  <td className="col-email">{user.email}</td>
-                  <td className="col-status">
+                  <td className="col-username" data-label="Tên đăng nhập">{user.username}</td>
+                  <td className="col-fullname" data-label="Tên đầy đủ">{user.fullName}</td>
+                  <td className="col-email" data-label="Email">{user.email}</td>
+                  <td className="col-status" data-label="Trạng thái">
                     <span className={`status-badge status-${user.isActive ? 'active' : 'inactive'}`}>
                       {user.isActive ? 'Hoạt động' : 'Vô hiệu hóa'}
                     </span>
                   </td>
-                  <td className="col-created">{formatCreatedDate(user.createdAt)}</td>
-                  <td className="col-actions">
+                  <td className="col-created" data-label="Ngày tạo">{formatCreatedDate(user.createdAt)}</td>
+                  <td className="col-actions" data-label="Hành động">
                     <div className="action-buttons">
                       <button 
                         className="btn-edit" 
