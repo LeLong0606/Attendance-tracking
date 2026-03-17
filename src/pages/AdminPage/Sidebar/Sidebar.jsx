@@ -109,7 +109,7 @@ function Sidebar({ currentPage, onPageChange, isOpen, onClose }) {
         <div className="sidebar-header" onClick={onClose}>
           <div className="sidebar-logo">
             <span className="logo-icon"><FaBars /></span>
-            <span className="logo-text">Habitas</span>
+            
           </div>
           <button
             className="sidebar-close"
