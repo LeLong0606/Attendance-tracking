@@ -24,8 +24,8 @@ export class ChangePasswordUseCase {
         throw new Error('Mật khẩu mới không khớp');
       }
 
-      if (newPassword.length < 8) {
-        throw new Error('Mật khẩu mới phải có ít nhất 8 ký tự');
+      if (newPassword.length < 6) {
+        throw new Error('Mật khẩu mới phải có ít nhất 6 ký tự');   
       }
 
       const response = await this.authRepository.changePassword(oldPassword, newPassword, confirmPassword);
