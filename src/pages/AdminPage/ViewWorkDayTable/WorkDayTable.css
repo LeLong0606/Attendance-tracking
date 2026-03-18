@@ -7,7 +7,20 @@
   flex-direction: column;
   flex: 1;
 }
-
+.btn_wdt
+{
+  height:40px;
+  padding: 8px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-Size: 14px;
+  font-Weight: 500;
+  margin-Right: 30px;
+  transition: background-color 0.3s;
+}
 .month-selector {
   margin-bottom: 1.5rem;
   display: flex;

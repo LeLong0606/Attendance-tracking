@@ -7,6 +7,7 @@ import { useToast } from "../../../hooks/useToast";
 import { userAPI, payrollAPI } from "../../../services/api";
 import { USER_ROLES } from "../../../config/constants";
 import { getLoginRedirectUrl } from "../../../config/constants";
+import { exportWorkdaySalaryToExcel } from "../../../domain/usecases/ExportExcel";
 import { 
   getUserRole,
   isAdmin,
@@ -276,6 +277,53 @@ function WorkDayTable() {
     await fetchSalariesForMonth(selectedMonth, selectedYear);
   };
 
+  const handleExportExcel = async () => {
+    if (loadingSalaries) {
+      showToast("Hệ thống đang tải dữ liệu, vui lòng chờ", "warning");
+      return;
+    }
+
+    if (!hasSearched) {
+      showToast("Vui lòng tra cứu dữ liệu trước khi xuất Excel", "warning");
+      return;
+    }
+
+    if (rows.length === 0) {
+      showToast("Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+
+    try {
+      const detailEntries = await Promise.all(
+        rows.map(async (row) => {
+          try {
+            const details = await payrollAPI.getTimesheetData(
+              row.id,
+              selectedMonth,
+              selectedYear,
+            );
+            return [row.id, Array.isArray(details) ? details : []];
+          } catch (error) {
+            return [row.id, []];
+          }
+        }),
+      );
+
+      const timesheetDetailsByEmployee = Object.fromEntries(detailEntries);
+
+      await exportWorkdaySalaryToExcel({
+        rows,
+        employeeSalaries,
+        month: selectedMonth,
+        year: selectedYear,
+        timesheetDetailsByEmployee,
+      });
+      showToast("Xuất Excel thành công", "success");
+    } catch (error) {
+      showToast(error?.message || "Xuất Excel thất bại", "error");
+    }
+  };
+
   // Kiểm tra tháng có cần bị vô hiệu hóa không
   const isMonthDisabled = (monthValue) => {
     return selectedYear === currentYear && monthValue > currentMonthNum;
@@ -364,27 +412,25 @@ function WorkDayTable() {
             </select>
           </div>
         </div>
+        <div className="button_container">
+           <button
+          onClick={handleExportExcel}
+          className = "btn_wdt"
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#2563eb")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#3b82f6")}
+        >
+          Xuất Excel
+        </button>
         <button
           onClick={handleSearch}
-          style={{
-            height: "40px",
-            padding: "8px 20px",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "500",
-            marginRight: "30px",
-            transition: "background-color 0.3s",
-
-          }}
+          className = "btn_wdt"
           onMouseEnter={(e) => (e.target.style.backgroundColor = "#2563eb")}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "#3b82f6")}
         >
           Tra cứu
         </button>
+        </div>
+       
       </div>
       {loadingSalaries && (
         <div
